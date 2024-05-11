@@ -23,6 +23,10 @@ def load_volume(filename):
     # get the data
     image_array = image.get_fdata()
 
+    #check input data are not empty
+    if np.all(image_array == 0):
+        raise ValueError("The input image contains only null values")
+
     #adapt to standard visualization
     image_array = image_array.transpose(1, 2, 0)[:, ::-1, :]
     
