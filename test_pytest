@@ -4,7 +4,7 @@ import numpy as np
 import nibabel as nib
 import pytest
 
-from segmentations_comparison import load_volume
+from segmentations_comparison import load_volume, get_largest_CC
 
 
 
@@ -62,5 +62,18 @@ def test_load_volume_empty_image():
 
 
 
+#GET_LARGEST_CC
+
+def test_get_largest_CC_type_shape():
+        """
+        Aim: Check if the type and the shape of the output are the same as the input ones
+        """
+        input_image = load_volume('simulated_freesurfer.mgz')
+
+        output_image = get_largest_CC(input_image)
+
+        assert isinstance(output_image, np.ndarray)
+
+        assert output_image.shape == input_image.shape
 
 
