@@ -77,3 +77,49 @@ def test_get_largest_CC_type_shape():
         assert output_image.shape == input_image.shape
 
 
+
+def test_get_largest_CC_check_output():
+    """
+    Aim: Check if the function correctly identifies the largest connected component
+    """
+    # Create an input image with two connected components
+    input_image = np.zeros((9, 9, 9))
+    input_image[1:2, 1:2, 1:2] = 1  # Smaller component
+    input_image[5:8, 5:8, 5:8] = 1  # Larger component
+
+    output_image = get_largest_CC(input_image)
+
+    expected_output = np.zeros((9, 9, 9))
+    expected_output[5:8, 5:8, 5:8] = 1
+
+    assert np.array_equal(output_image, expected_output)
+
+
+
+
+def test_get_largest_CC_no_segmentation():
+        """
+        Aim: check if it raises a ValueError when input image is not segmented
+        """
+        
+        not_segmented_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
+
+        try:
+            get_largest_CC(not_segmented_image)
+        except ValueError as e:
+            assert str(e) == "Input image is not segmented"
+
+
+def test_get_largest_CC_no_connected_components():
+    """
+    Aim: Check if the function correctly handles an input image with no connected components
+    """
+    input_image = np.zeros((8, 8, 8))
+    input_image[1, 1, 1] = 1
+    input_image[5, 5, 5] = 1
+    input_image[7, 7, 7] = 1
+
+    try:
+        get_largest_CC(input_image)
+    except ValueError as e:
+        assert str(e) == "No connected components found in the input image"
