@@ -16,9 +16,9 @@ def test_load_volume_type_shape():
     Aim: check type and shape of the output
     """
  
-    assert isinstance(load_volume('simulated_freesurfer.mgz'), np.ndarray)
+    assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray)
 
-    assert load_volume('simulated_freesurfer.mgz').shape == (256, 256, 256)
+    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == (256, 256, 256)
 
 
 
@@ -27,7 +27,7 @@ def test_load_volume_segmented():
     Aim: check that the output image is segmented
     """
 
-    assert np.all((load_volume('simulated_freesurfer.mgz') == 0) | (load_volume('simulated_freesurfer.mgz') == 1))
+    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1))
 
 
 
@@ -68,7 +68,7 @@ def test_get_largest_CC_type_shape():
         """
         Aim: Check if the type and the shape of the output are the same as the input ones
         """
-        input_image = load_volume('simulated_freesurfer.mgz')
+        input_image = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
 
         output_image = get_largest_CC(input_image)
 
