@@ -60,9 +60,9 @@ def get_largest_CC(segmentation):
 
 # Loading volumes
 input_volumes= {
-    'FreeSurfer': load_volume('Simulated_FreeSurfer.mgz'),
-    'FreeSurfer_auto': load_volume('Simulated_FreeSurfer_auto.mgz'),
-    'FastSurfer': load_volume('Simulated_FastSurfer.mgz')
+    'FreeSurfer': load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'),
+    'FreeSurfer_auto': load_volume('Simulated_Data/Simulated_FreeSurfer_auto.mgz'),
+    'FastSurfer': load_volume('Simulated_Data/Simulated_FastSurfer.mgz')
 }
 
 
