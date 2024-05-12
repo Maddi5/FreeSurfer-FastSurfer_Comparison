@@ -16,9 +16,9 @@ def test_load_volume_type_shape():
     Aim: check type and shape of the output
     """
  
-    assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray)
+    assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray), "Expected output type to be numpy.ndarray"
 
-    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == (256, 256, 256)
+    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == (256, 256, 256), "Expected loaded volume to have shape [256, 256, 256]"
 
 
 
@@ -27,7 +27,7 @@ def test_load_volume_segmented():
     Aim: check that the output image is segmented
     """
 
-    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1))
+    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1)), "Expected output volume to be segmented"
 
 
 
@@ -72,9 +72,9 @@ def test_get_largest_CC_type_shape():
 
         output_image = get_largest_CC(input_image)
 
-        assert isinstance(output_image, np.ndarray)
+        assert isinstance(output_image, np.ndarray), "Expected output type to be numpy.ndarray"
 
-        assert output_image.shape == input_image.shape
+        assert output_image.shape == input_image.shape, "Expected output shape to be the same as input"
 
 
 
@@ -92,7 +92,7 @@ def test_get_largest_CC_check_output():
     expected_output = np.zeros((9, 9, 9))
     expected_output[5:8, 5:8, 5:8] = 1
 
-    assert np.array_equal(output_image, expected_output)
+    assert np.array_equal(output_image, expected_output), "Failed in identifying the largest connected component correctly"
 
 
 def test_get_largest_CC_single_connected_component():
@@ -106,7 +106,7 @@ def test_get_largest_CC_single_connected_component():
 
     output_image = get_largest_CC(input_image)
 
-    assert np.array_equal(output_image, input_image)
+    assert np.array_equal(output_image, input_image), "Expected output to be the same as input for single connected component"
 
 
 
@@ -118,7 +118,7 @@ def test_get_largest_CC_full_input():
 
     output_image = get_largest_CC(full_image)
 
-    assert np.array_equal(output_image, full_image)
+    assert np.array_equal(output_image, full_image), "Expected output to be the ssame as input for full input image"
 
 
 def test_get_largest_CC_no_segmentation():
@@ -131,7 +131,7 @@ def test_get_largest_CC_no_segmentation():
         try:
             get_largest_CC(not_segmented_image)
         except ValueError as e:
-            assert str(e) == "Input image is not segmented"
+            assert str(e) == "Input image is not segmented", "Expected ValueError when input image is not segmented"
 
 
 def test_get_largest_CC_no_connected_components():
@@ -146,4 +146,4 @@ def test_get_largest_CC_no_connected_components():
     try:
         get_largest_CC(input_image)
     except ValueError as e:
-        assert str(e) == "No connected components found in the input image"
+        assert str(e) == "No connected components found in the input image", "Expected ValueError when the image has no connected components"
