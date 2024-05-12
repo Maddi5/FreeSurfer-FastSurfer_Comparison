@@ -95,6 +95,30 @@ def test_get_largest_CC_check_output():
     assert np.array_equal(output_image, expected_output)
 
 
+def test_get_largest_CC_single_connected_component():
+    """
+    Aim: Check if the function correctly handles an input image with a single connected component
+    """
+
+    #Create image with a single connected component
+    input_image = np.zeros((10, 10, 10))
+    input_image[3:7, 3:7, 3:7] = 1
+
+    output_image = get_largest_CC(input_image)
+
+    assert np.array_equal(output_image, input_image)
+
+
+
+def test_get_largest_CC_full_input():
+    """
+    Aim: Check if the function correctly handles a full input image
+    """
+    full_image = np.ones((5, 5, 5))
+
+    output_image = get_largest_CC(full_image)
+
+    assert np.array_equal(output_image, full_image)
 
 
 def test_get_largest_CC_no_segmentation():
