@@ -5,6 +5,11 @@ import nibabel as nib
 
 from scipy.ndimage import label as connected_components
 
+from setup import Setup_Script
+
+
+
+Setup_Script()
 
 
 
