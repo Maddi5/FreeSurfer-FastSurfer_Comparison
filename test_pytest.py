@@ -31,6 +31,26 @@ def test_load_volume_segmented():
 
 
 
+def test_load_volume_transpose():
+    """
+    Aim: check if the values are correctly trasposed
+    """
+
+    test_volume = np.array([[[0, 1], [2, 4]],
+                           [[3, 0], [1, 2]]])
+    
+    nib.save(nib.Nifti1Image(test_volume, np.eye(4)), 'test_volume.mgz') 
+
+    loaded_volume = load_volume('test_volume.mgz')
+
+    #transposed and binarized input image
+    expected_output = np.array([[[1, 0], [0, 1]],
+                            [[1, 1], [1, 1]]])
+
+    assert np.array_equal(loaded_volume, expected_output), "Failed to correctly transpose the volume"
+
+
+
 def test_load_volume_not_existent():
     """
     Aim: check the function to have the right behaviour when the filename doesn't exist
