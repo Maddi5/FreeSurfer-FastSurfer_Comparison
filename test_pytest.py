@@ -5,6 +5,7 @@ import nibabel as nib
 import pytest
 
 from segmentations_comparison import load_volume, get_largest_CC
+from metrics import jaccard_index
 
 
 
@@ -167,3 +168,86 @@ def test_get_largest_CC_no_connected_components():
         get_largest_CC(input_image)
     except ValueError as e:
         assert str(e) == "No connected components found in the input image", "Expected ValueError when the image has no connected components"
+
+
+
+
+
+
+
+
+
+
+#JACCARD_INDEX
+
+def test_jaccard_different_shapes():
+    """
+    Aim: test if the function raises a ValueError when input are of different shapes
+    """
+    seg_1 = np.array([1, 0, 1, 0, 1])
+    seg_2 = np.array([1, 1, 0, 0, 1, 1])
+
+    try:
+        jaccard_index(seg_1, seg_2)
+    except ValueError as e:
+        assert str(e) == "Segmentations are of different shape", "Expected a ValueError when the segmentations are of different shape"
+
+
+
+
+
+def test_jaccard_empty_segmentation():
+    """
+    Aim: check that the function raises an error when passing one or two void segmentations
+    """
+   
+    seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[1, 1], [1, 0]], [[1, 0], [1, 1]]])
+
+    #one void segmentation
+    try:
+        jaccard_index(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "One of the segmentations is empty. Jaccard Index cannot be computed", "Expected a ValueError when one of the segmentations is empty"
+
+    try:
+        jaccard_index(seg2, seg1)
+    except ValueError as e:
+        assert str(e) == "One of the segmentations is empty. Jaccard Index cannot be computed", "Expected a ValueError when one of the segmentations is empty"
+
+    #both void segmentations
+    try:
+        jaccard_index(seg1, seg1)
+    except ValueError as e:
+        assert str(e) == "Both of the segmentations are empty. Jaccard Index cannot be computed", "Expected a ValueError when both of the segmentations are empty"
+
+
+
+
+
+
+
+def test_jaccard_no_segmentations():
+    """
+    Aim: test that the function raises a ValueError if input volumes are not segmented
+    """
+
+    seg1 = np.array([1, 0, 2, 0, 1])
+    seg2 = np.array([1, 3, 0, 2, 1])
+
+    try:
+        jaccard_index(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are different that 0 or 1"
+
+
+    # test with negative values
+    seg1 = np.array([1, 0, -1, 0, 1])
+    seg2 = np.array([1, 0, 0, 0, 1])
+
+    try:
+        jaccard_index(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are negative"
+
+
