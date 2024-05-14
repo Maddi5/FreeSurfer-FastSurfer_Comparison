@@ -3,6 +3,7 @@
 import numpy as np
 import nibabel as nib
 import pytest
+from math import isclose
 
 from segmentations_comparison import load_volume, get_largest_CC
 from metrics import jaccard_index
@@ -179,6 +180,53 @@ def test_get_largest_CC_no_connected_components():
 
 
 #JACCARD_INDEX
+
+def test_jaccard_output():
+    """
+    Aim: check that the function works properly in three easy cases
+    """
+
+    # Completely different
+    seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[0, 0], [0, 1]], [[0, 0], [1, 0]]])
+
+    assert jaccard_index(seg1, seg2) == 0.0, "Expected Jaccard Index to be 0 when segmentations don't intersect"
+
+    #Indentical
+    seg3 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    seg4 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+
+    assert jaccard_index(seg3, seg4) == 1.0, "Expected Jaccard Index to be 1 when segmentations are identical"
+
+    # Partial superposition
+    seg5 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    seg6 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
+
+    assert jaccard_index(seg5, seg6) == (2/3), "Expected Jaccard Index to be 2/3"
+
+
+
+def test_jaccard_large_volumes():
+    """
+    Aim: check if the function is able to deal with large volumes
+    """
+    #large volumes
+    seg1 = np.ones((300, 300, 300))
+    seg2 = np.ones((300, 300, 300))
+
+    assert jaccard_index(seg1, seg2) == 1.0, "Expected Jaccard Index to be 1 for identical segmentations"
+
+    #large volumes with one pixel of difference
+    seg3 = np.ones((300, 300, 300))
+    seg4 = np.copy(seg3)
+    
+    seg4[50, 50, 50] = 0
+
+    assert isclose(jaccard_index(seg3, seg4), (seg3.size - 1) / seg3.size, rel_tol=1e-6)
+
+
+
+
 
 def test_jaccard_different_shapes():
     """
