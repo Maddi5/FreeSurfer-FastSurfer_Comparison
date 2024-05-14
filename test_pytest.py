@@ -226,6 +226,35 @@ def test_jaccard_large_volumes():
 
 
 
+def test_jaccard_complex_shapes():
+    """
+    Aim: test if the function is able to deal with complex volumes (spheres as approximations of brains)
+    """
+    seg1 = np.zeros((100, 100, 100))
+    seg2 = np.zeros((100, 100, 100))
+
+    # Create a sphere in the first segmentation
+    y, x, z = np.ogrid[-50:50, -50:50, -50:50]
+    mask = x**2 + y**2 + z**2 <= 30**2
+    
+    seg1[mask] = 1
+
+    # Create a sphere in the second segmentation
+    y, x, z = np.ogrid[-50:50, -50:50, -50:50]
+    mask = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
+
+    seg2[mask] = 1
+
+
+    intersection_volume = np.sum(np.minimum(seg1, seg2))
+    union_volume = np.sum(np.maximum(seg1, seg2))
+    
+    expected_jaccard = intersection_volume / union_volume
+
+    assert jaccard_index(seg1, seg2) == expected_jaccard
+
+
+
 
 
 def test_jaccard_different_shapes():
