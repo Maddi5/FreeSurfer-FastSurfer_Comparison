@@ -4,8 +4,11 @@ import numpy as np
 import nibabel as nib
 
 from scipy.ndimage import label as connected_components
+from medpy.metric.binary import dc
+
 
 from setup import Setup_Script
+from metrics import jaccard_index, volumetric_difference
 
 
 
@@ -80,7 +83,21 @@ input_volumes= {
 
 
 data = {
-    'FreeSurfer': get_largest_CC(input_volumes['FreeSurfer']),
-    'FreeSurfer_auto': get_largest_CC(input_volumes['FreeSurfer_auto']),
-    'FastSurfer': get_largest_CC(input_volumes['FastSurfer'])
+    'FreeSurfer': get_largest_CC(input_volumes['FreeSurfer']).astype(int),
+    'FreeSurfer_auto': get_largest_CC(input_volumes['FreeSurfer_auto']).astype(int),
+    'FastSurfer': get_largest_CC(input_volumes['FastSurfer']).astype(int)
 }
+
+
+
+
+
+#Check if it works in the first case of comparison
+dice_coeff_A = dc(data['FreeSurfer'], data['FreeSurfer_auto'])
+jaccard_index_A = jaccard_index(data['FreeSurfer'], data['FreeSurfer_auto'])
+vol_difference_A = volumetric_difference(data['FreeSurfer'], data['FreeSurfer_auto'])
+
+
+print("Dice Similarity Coefficient:", dice_coeff_A)
+print("Jaccard index:", jaccard_index_A)
+print("Volume difference between the segmentations:", vol_difference_A)
