@@ -186,23 +186,16 @@ def test_jaccard_output():
     Aim: check that the function works properly in three easy cases
     """
 
-    # Completely different
-    seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [0, 0]]])
-    seg2 = np.array([[[0, 0], [0, 1]], [[0, 0], [1, 0]]])
+    seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    seg2 = np.array([[[0, 0], [0, 1]], [[0, 0], [0, 1]]])
+    seg3 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
+
 
     assert jaccard_index(seg1, seg2) == 0.0, "Expected Jaccard Index to be 0 when segmentations don't intersect"
 
-    #Indentical
-    seg3 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
-    seg4 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    assert jaccard_index(seg1, seg1) == 1.0, "Expected Jaccard Index to be 1 when segmentations are identical"
 
-    assert jaccard_index(seg3, seg4) == 1.0, "Expected Jaccard Index to be 1 when segmentations are identical"
-
-    # Partial superposition
-    seg5 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
-    seg6 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
-
-    assert jaccard_index(seg5, seg6) == (2/3), "Expected Jaccard Index to be 2/3"
+    assert jaccard_index(seg1, seg3) == (2/3), "Expected Jaccard Index to be 2/3"
 
 
 
@@ -217,12 +210,9 @@ def test_jaccard_large_volumes():
     assert jaccard_index(seg1, seg2) == 1.0, "Expected Jaccard Index to be 1 for identical segmentations"
 
     #large volumes with one pixel of difference
-    seg3 = np.ones((300, 300, 300))
-    seg4 = np.copy(seg3)
-    
-    seg4[50, 50, 50] = 0
+    seg2[50, 50, 50] = 0
 
-    assert isclose(jaccard_index(seg3, seg4), (seg3.size - 1) / seg3.size, rel_tol=1e-6)
+    assert isclose(jaccard_index(seg1, seg2), (seg1.size - 1) / seg1.size, rel_tol=1e-6)
 
 
 
@@ -233,17 +223,15 @@ def test_jaccard_complex_shapes():
     seg1 = np.zeros((100, 100, 100))
     seg2 = np.zeros((100, 100, 100))
 
-    # Create a sphere in the first segmentation
     y, x, z = np.ogrid[-50:50, -50:50, -50:50]
-    mask = x**2 + y**2 + z**2 <= 30**2
-    
-    seg1[mask] = 1
+
+    # Create a sphere in the first segmentation
+    mask_1 = x**2 + y**2 + z**2 <= 30**2
+    seg1[mask_1] = 1
 
     # Create a sphere in the second segmentation
-    y, x, z = np.ogrid[-50:50, -50:50, -50:50]
-    mask = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
-
-    seg2[mask] = 1
+    mask_2 = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
+    seg2[mask_2] = 1
 
 
     intersection_volume = np.sum(np.minimum(seg1, seg2))
@@ -309,8 +297,10 @@ def test_jaccard_no_segmentations():
     Aim: test that the function raises a ValueError if input volumes are not segmented
     """
 
-    seg1 = np.array([1, 0, 2, 0, 1])
+    seg1 = np.array([1, 0, 1, 0, 1])
     seg2 = np.array([1, 3, 0, 2, 1])
+    seg3 = np.array([1, 0, -1, 0, 1])
+
 
     try:
         jaccard_index(seg1, seg2)
@@ -318,12 +308,8 @@ def test_jaccard_no_segmentations():
         assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are different that 0 or 1"
 
 
-    # test with negative values
-    seg1 = np.array([1, 0, -1, 0, 1])
-    seg2 = np.array([1, 0, 0, 0, 1])
-
     try:
-        jaccard_index(seg1, seg2)
+        jaccard_index(seg1, seg3)
     except ValueError as e:
         assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are negative"
 
@@ -342,17 +328,14 @@ def test_volumetric_difference_output():
 
     seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[0, 0], [1, 0]], [[0, 0], [1, 0]]])
+    seg3 = np.array([[[1, 0], [0, 0]], [[1, 0], [0, 1]]])
+
 
     assert volumetric_difference(seg1, seg2) == 0, "Expected volumetric difference to be 0 if the volumes are equal"
 
-    #identical
     assert volumetric_difference(seg2, seg2) == 0, "Expected Volumetric Difference to be 0 for identical segmentations"
 
-    # Partial superposition
-    seg3 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
-    seg4 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
-
-    assert volumetric_difference(seg3, seg4) == -1
+    assert volumetric_difference(seg1, seg3) == -1
 
 
 
