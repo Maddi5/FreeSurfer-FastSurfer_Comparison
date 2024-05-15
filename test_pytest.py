@@ -3,10 +3,10 @@
 import numpy as np
 import nibabel as nib
 import pytest
-from math import isclose
+from math import isclose, pi
 
 from segmentations_comparison import load_volume, get_largest_CC
-from metrics import jaccard_index
+from metrics import jaccard_index, volumetric_difference
 
 
 
@@ -326,5 +326,72 @@ def test_jaccard_no_segmentations():
         jaccard_index(seg1, seg2)
     except ValueError as e:
         assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are negative"
+
+
+
+
+
+
+
+
+#VOLUMETRIC DIFFERENCE
+def test_volumetric_difference_output():
+    """
+    Aim: check that the function works properly in three easy cases
+    """
+
+    seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[0, 0], [1, 0]], [[0, 0], [1, 0]]])
+
+    assert volumetric_difference(seg1, seg2) == 0, "Expected volumetric difference to be 0 if the volumes are equal"
+
+    #identical
+    assert volumetric_difference(seg2, seg2) == 0, "Expected Volumetric Difference to be 0 for identical segmentations"
+
+    # Partial superposition
+    seg3 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    seg4 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
+
+    assert volumetric_difference(seg3, seg4) == -1
+
+
+
+
+def test_volumetric_difference_large_volumes():
+    """
+    Aim: check if the function is able to deal with large volumes
+    """
+    #large volumes
+    seg_1 = np.ones((300, 300, 300))
+    seg_2 = np.ones((300, 300, 300))
+
+    assert volumetric_difference(seg_1, seg_2) == 0, "Expected Volumetric Difference to be 0 for identical volumes"
+
+    #large volumes with one pixel of difference
+    seg_2[50, 50, 50] = 0
+
+    assert volumetric_difference(seg_1, seg_2) == 1, "Expected volumetric difference to be 1 if volumes differ of one pixel only"
+
+
+
+
+def test_volumetric_difference_complex_shapes():
+    """
+    Aim: test if the function is able to deal with complex volumes (spheres as approximations of brains)
+    """
+    seg1 = np.zeros((100, 100, 100))
+    seg2 = np.zeros((100, 100, 100))
+
+    y, x, z = np.ogrid[-50:50, -50:50, -50:50]
+   
+    mask_1 = x**2 + y**2 + z**2 <= 30**2
+    seg1[mask_1] = 1
+
+    mask_2 = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
+    seg2[mask_2] = 1
+
+    #Volumetric difference should be the difference of the volumes of the two spheres
+    assert isclose(volumetric_difference(seg1, seg2), (4/3)*pi*(30**3 - 20**3), rel_tol=1e-2), "Failed to compute the volumetric difference between the spheres correctly"
+
 
 
