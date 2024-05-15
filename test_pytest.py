@@ -395,3 +395,65 @@ def test_volumetric_difference_complex_shapes():
 
 
 
+def test_volumetric_difference_empty_segmentation():
+    """
+    Aim: check that the function raises an error when passing one or two empty segmentations
+    """
+    seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[1, 0], [0, 1]], [[1, 0], [1, 1]]])
+
+    #one empty segmentation
+    try:
+        volumetric_difference(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "One of the segmented volumes is empty. Check input data", "Expected a ValueError when one of the segmentations is empty"
+
+    try:
+        volumetric_difference(seg2, seg1)
+    except ValueError as e:
+        assert str(e) == "One of the segmented volumes is empty. Check input data", "Expected a ValueError when one of the segmentations is empty"
+
+
+    #both empty segmentations
+    try:
+        volumetric_difference(seg1, seg1)
+    except ValueError as e:
+        assert str(e) == "Both of the segmented volumes are empty. Check input data", "Expected a ValueError when both of the segmentations are empty"
+
+
+
+
+def test_volumetric_difference_different_shapes():
+    """
+    Aim: check that the function raises an error when input data are of different length
+    """
+    seg1 = np.array([1, 0, 1, 0, 1])
+    seg2 = np.array([1, 0, 0, 0, 1, 1])
+
+    try:
+        volumetric_difference(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Input segmentations are of different shape", "Expected a ValueError when the segmentations are of different shape"
+
+
+
+def test_volumetric_difference_not_segmented():
+    """
+    Aim: check that the function raises an error when input data are not segmented
+    """
+    seg1 = np.array([1, 0, 0, 0, 1])
+    seg2 = np.array([1, 0, 2, 0, 1])
+    seg3 = np.array([1, 0, -1, 0, 1])
+
+    try:
+        volumetric_difference(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Segmentations contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are not binary"
+
+    try:
+        volumetric_difference(seg1, seg3)
+    except ValueError as e:
+        assert str(e) == "Segmentations contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are negative"
+
+
+

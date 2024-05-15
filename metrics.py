@@ -33,9 +33,21 @@ def jaccard_index(seg_1, seg_2):
 
 def volumetric_difference(seg_1, seg_2):
 
+    if seg_1.shape != seg_2.shape:
+        raise ValueError("Input segmentations are of different shape")
+
+    if not np.all(np.isin(seg_1, [0, 1])) or not np.all(np.isin(seg_2, [0,1])):
+        raise ValueError("Segmentations contain values other than 0 and 1. Check input data")
+    
     volume_1 = np.sum(seg_1)
     volume_2 = np.sum(seg_2)
 
+    if volume_1 == 0  and volume_2 == 0:
+        raise ValueError("Both of the segmented volumes are empty. Check input data")
+
+    if volume_1 == 0  or volume_2 == 0:
+        raise ValueError("One of the segmented volumes is empty. Check input data")
+    
     vol_difference = volume_1 - volume_2
     
     return vol_difference
