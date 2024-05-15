@@ -261,11 +261,11 @@ def test_jaccard_different_shapes():
     """
     Aim: test if the function raises a ValueError when input are of different shapes
     """
-    seg_1 = np.array([1, 0, 1, 0, 1])
-    seg_2 = np.array([1, 1, 0, 0, 1, 1])
+    seg1 = np.array([1, 0, 1, 0, 1])
+    seg2 = np.array([1, 1, 0, 0, 1, 1])
 
     try:
-        jaccard_index(seg_1, seg_2)
+        jaccard_index(seg1, seg2)
     except ValueError as e:
         assert str(e) == "Segmentations are of different shape", "Expected a ValueError when the segmentations are of different shape"
 
@@ -362,15 +362,15 @@ def test_volumetric_difference_large_volumes():
     Aim: check if the function is able to deal with large volumes
     """
     #large volumes
-    seg_1 = np.ones((300, 300, 300))
-    seg_2 = np.ones((300, 300, 300))
+    seg1 = np.ones((300, 300, 300))
+    seg2 = np.ones((300, 300, 300))
 
-    assert volumetric_difference(seg_1, seg_2) == 0, "Expected Volumetric Difference to be 0 for identical volumes"
+    assert volumetric_difference(seg1, seg2) == 0, "Expected Volumetric Difference to be 0 for identical volumes"
 
     #large volumes with one pixel of difference
-    seg_2[50, 50, 50] = 0
+    seg2[50, 50, 50] = 0
 
-    assert volumetric_difference(seg_1, seg_2) == 1, "Expected volumetric difference to be 1 if volumes differ of one pixel only"
+    assert volumetric_difference(seg1, seg2) == 1, "Expected volumetric difference to be 1 if volumes differ of one pixel only"
 
 
 
