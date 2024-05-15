@@ -249,8 +249,8 @@ def test_jaccard_different_shapes():
     """
     Aim: test if the function raises a ValueError when input are of different shapes
     """
-    seg1 = np.array([1, 0, 1, 0, 1])
-    seg2 = np.array([1, 1, 0, 0, 1, 1])
+    seg1 = np.zeros((5, 5, 5))
+    seg2 = np.zeros((6, 6, 6))
 
     try:
         jaccard_index(seg1, seg2)
@@ -297,10 +297,9 @@ def test_jaccard_no_segmentations():
     Aim: test that the function raises a ValueError if input volumes are not segmented
     """
 
-    seg1 = np.array([1, 0, 1, 0, 1])
-    seg2 = np.array([1, 3, 0, 2, 1])
-    seg3 = np.array([1, 0, -1, 0, 1])
-
+    seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
+    seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
+    seg3 = np.array([[[1, 0], [-1, 0]], [[1, 0], [1, 0]]])
 
     try:
         jaccard_index(seg1, seg2)
@@ -410,8 +409,8 @@ def test_volumetric_difference_different_shapes():
     """
     Aim: check that the function raises an error when input data are of different length
     """
-    seg1 = np.array([1, 0, 1, 0, 1])
-    seg2 = np.array([1, 0, 0, 0, 1, 1])
+    seg1 = np.zeros((5, 5, 5))
+    seg2 = np.zeros((6, 6, 6))
 
     try:
         volumetric_difference(seg1, seg2)
@@ -424,9 +423,9 @@ def test_volumetric_difference_not_segmented():
     """
     Aim: check that the function raises an error when input data are not segmented
     """
-    seg1 = np.array([1, 0, 0, 0, 1])
-    seg2 = np.array([1, 0, 2, 0, 1])
-    seg3 = np.array([1, 0, -1, 0, 1])
+    seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
+    seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
+    seg3 = np.array([[[1, 0], [-1, 0]], [[1, 0], [1, 0]]])
 
     try:
         volumetric_difference(seg1, seg2)
