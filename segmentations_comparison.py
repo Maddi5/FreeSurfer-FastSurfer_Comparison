@@ -8,7 +8,7 @@ from medpy.metric.binary import dc
 
 
 from setup import Setup_Script
-from metrics import jaccard_index, volumetric_difference
+from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 
 
 
@@ -96,8 +96,10 @@ data = {
 dice_coeff_A = dc(data['FreeSurfer'], data['FreeSurfer_auto'])
 jaccard_index_A = jaccard_index(data['FreeSurfer'], data['FreeSurfer_auto'])
 vol_difference_A = volumetric_difference(data['FreeSurfer'], data['FreeSurfer_auto'])
+hausdorff_dist_A = Hausdorff_distance(data['FreeSurfer'], data['FreeSurfer_auto'])
 
 
 print("Dice Similarity Coefficient:", dice_coeff_A)
 print("Jaccard index:", jaccard_index_A)
 print("Volume difference between the segmentations:", vol_difference_A)
+print("Hausdorff Distance:", hausdorff_dist_A)

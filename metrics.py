@@ -1,6 +1,8 @@
 #Script with functions to compute the metrics
 
 import numpy as np 
+from skimage import metrics
+
 
 
 
@@ -54,3 +56,12 @@ def volumetric_difference(seg_1, seg_2):
 
 
 
+
+def Hausdorff_distance(seg1,seg2):
+
+    seg1 = np.asarray(seg1, dtype=bool)
+    seg2 = np.asarray(seg2, dtype=bool)
+
+    hausdorff_dist = metrics.hausdorff_distance(seg1, seg2, method = 'modified')
+
+    return(hausdorff_dist)
