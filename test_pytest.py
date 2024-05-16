@@ -443,7 +443,7 @@ def test_volumetric_difference_not_segmented():
 
 #HAUSDORFF DISTANCE
 
-def test_Hausdorff():
+def test_Hausdorff_2D():
     """
     Aim: check if it works properly with 2D data (because it's easier)
     """
@@ -453,6 +453,74 @@ def test_Hausdorff():
     Hausdorff_dist = Hausdorff_distance(seg1, seg2)
 
     assert Hausdorff_dist == 0.5, "Expected Hausdorff distance to be 0.5"
+
+
+def test_Hausdorff_3D_identical():
+    """
+    Aim: check if the function works properly with identical 3D volumes
+    """
+    
+    seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [1, 0]]])
+
+    assert Hausdorff_distance(seg1, seg1) == 0, "Expected Hausdorff distance to be 0 for identical segmentations"
+
+
+def test_Hausdorff_3D_single_point_segmentations():
+
+    """
+    Aim: check if the function works porperly with simple 3D data
+    """
+    seg1 = np.zeros((3, 3, 3))
+    seg2 = np.zeros((3, 3, 3))
+
+    seg1[0, 0, 0] = 1
+    seg2[1, 1, 1] = 1
+
+    assert Hausdorff_distance(seg1, seg2) == np.sqrt(3), "Expected Hausdorff distance to be sqrt(3)"
+
+
+
+
+def test_Hausdorff_3D_large_volumes():
+    """
+    Aim: check if the function is able to deal with large volumes
+    """
+    seg1 = np.ones((300, 300, 300))
+    seg2 = np.ones((300, 300, 300))
+    
+    assert Hausdorff_distance(seg1, seg2) == 0.0, "Expected Hausdorff distance to be 0 for identical segmentations"
+
+
+
+def test_Hausdorff_empty_segmentation():
+    """
+    Aim: check that the function raises an error when passing one or two void segmentations
+
+    """
+    seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[1, 1], [0, 1]], [[1, 0], [1, 1]]])
+
+    #first segmentation is empty
+    try:
+        Hausdorff_distance(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "One of the segmentations is empty. Hausdorff distance cannot be computed", "Expected a ValueError when one of the segmentations is empty"
+
+    #second segmentation is empty
+    try:
+        Hausdorff_distance(seg2, seg1)
+    except ValueError as e:
+        assert str(e) == "One of the segmentations is empty. Hausdorff distance cannot be computed", "Expected a ValueError when one of the segmentations is empty"
+
+    #both segmentations are empty
+    try:
+        Hausdorff_distance(seg1, seg1)
+    except ValueError as e:
+        assert str(e) == "Both of the segmentations are empty. Hausdorff distance cannot be computed", "Expected a ValueError when both the segmentations are empty"
+
+
+
+
 
 
 def test_Hausdorff_different_shapes():

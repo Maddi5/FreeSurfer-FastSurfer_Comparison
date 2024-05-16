@@ -68,6 +68,13 @@ def Hausdorff_distance(seg1,seg2):
     seg1 = np.asarray(seg1, dtype=bool)
     seg2 = np.asarray(seg2, dtype=bool)
 
+    if np.sum(seg1) == 0 and np.sum(seg2) == 0:
+        raise ValueError("Both of the segmentations are empty. Hausdorff distance cannot be computed")
+
+    if np.sum(seg1) == 0 or np.sum(seg2) == 0:
+        raise ValueError("One of the segmentations is empty. Hausdorff distance cannot be computed")
+    
+
     hausdorff_dist = metrics.hausdorff_distance(seg1, seg2, method = 'modified')
 
     return(hausdorff_dist)
