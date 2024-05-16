@@ -455,3 +455,36 @@ def test_Hausdorff():
     assert Hausdorff_dist == 0.5, "Expected Hausdorff distance to be 0.5"
 
 
+def test_Hausdorff_different_shapes():
+    """
+    Aim: Check if the function raises an error if input volumes are of different shape
+    """
+    seg1 = np.zeros((300, 300, 300))
+    seg2 = np.zeros((200, 200, 200))
+
+    try:
+        Hausdorff_distance(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Input data are of different shape. Hausdorff distance cannot be computed", "Expected ValueError when input data are of different shape"
+
+
+
+def test_Hausdorff_not_segmented():
+    """
+    Aim: check that the function raises an error when input data are not segmented
+    """
+    seg1 = np.array([1, 0, 0, 0, 1])
+    seg2 = np.array([1, 0, 2, 0, 1])
+    seg3 = np.array([1, 0, -1, 0, 1])
+
+    try:
+        Hausdorff_distance(seg1, seg2)
+    except ValueError as e:
+        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in input volume are different from 0 or 1"
+
+
+    try:
+        Hausdorff_distance(seg1, seg3)
+    except ValueError as e:
+        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in input volume are negative"
+

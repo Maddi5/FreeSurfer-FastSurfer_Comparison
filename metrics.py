@@ -59,6 +59,12 @@ def volumetric_difference(seg1, seg2):
 
 def Hausdorff_distance(seg1,seg2):
 
+    if seg1.shape != seg2.shape:
+        raise ValueError("Input data are of different shape. Hausdorff distance cannot be computed")
+
+    if not np.all(np.isin(seg1, [0, 1])) or not np.all(np.isin(seg2, [0,1])):
+        raise ValueError("Input volumes contain values other than 0 and 1. Check input data")
+    
     seg1 = np.asarray(seg1, dtype=bool)
     seg2 = np.asarray(seg2, dtype=bool)
 
