@@ -25,7 +25,14 @@ def Setup_Script():
         import pytest
     except:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pytest'])
-
+    try:
+        import skimage
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'skimage'])
+    try:
+        import medpy
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'medpy'])
 
     print('Using cpu: ' + str(os.cpu_count()))
     print('All good, off we go!')
