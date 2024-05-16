@@ -6,7 +6,7 @@ import pytest
 from math import isclose, pi
 
 from segmentations_comparison import load_volume, get_largest_CC
-from metrics import jaccard_index, volumetric_difference
+from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 
 
 
@@ -437,5 +437,21 @@ def test_volumetric_difference_not_segmented():
     except ValueError as e:
         assert str(e) == "Segmentations contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are negative"
 
+
+
+
+
+#HAUSDORFF DISTANCE
+
+def test_Hausdorff():
+    """
+    Aim: check if it works properly with 2D data (because it's easier)
+    """
+    seg1 = np.array([[1, 1], [0, 0]])
+    seg2 = np.array([[1, 0], [0, 1]])
+
+    Hausdorff_dist = Hausdorff_distance(seg1, seg2)
+
+    assert Hausdorff_dist == 0.5, "Expected Hausdorff distance to be 0.5"
 
 
