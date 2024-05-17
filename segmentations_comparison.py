@@ -2,6 +2,7 @@
 
 import numpy as np
 import nibabel as nib
+import pandas as pd
 
 from scipy.ndimage import label as connected_components
 from medpy.metric.binary import dc
@@ -74,6 +75,8 @@ def get_largest_CC(segmentation):
 
 
 
+
+
 # Loading volumes
 input_volumes= {
     'FreeSurfer': load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'),
@@ -92,14 +95,30 @@ data = {
 
 
 
-#Check if it works in the first case of comparison
-dice_coeff_A = dc(data['FreeSurfer'], data['FreeSurfer_auto'])
-jaccard_index_A = jaccard_index(data['FreeSurfer'], data['FreeSurfer_auto'])
-vol_difference_A = volumetric_difference(data['FreeSurfer'], data['FreeSurfer_auto'])
-hausdorff_dist_A = Hausdorff_distance(data['FreeSurfer'], data['FreeSurfer_auto'])
+#Define cases of comparison
+cases = [('FreeSurfer', 'FreeSurfer_auto'), ('FreeSurfer', 'FastSurfer'), ('FreeSurfer_auto', 'FastSurfer')]
 
 
-print("Dice Similarity Coefficient:", dice_coeff_A)
-print("Jaccard index:", jaccard_index_A)
-print("Volume difference between the segmentations:", vol_difference_A)
-print("Hausdorff Distance:", hausdorff_dist_A)
+
+results_list = []
+
+
+#Compute the metrics in each case of comparison
+for case in cases:
+
+    dice_coeff = dc(data[case[0]], data[case[1]])
+    jaccard_ind = jaccard_index(data[case[0]], data[case[1]])
+    vol_difference = volumetric_difference(data[case[0]], data[case[1]])
+    hausdorff_dist = Hausdorff_distance(data[case[0]], data[case[1]])
+
+    print(f"Case {case[0]} vs {case[1]}:")
+    print("Dice Similarity Coefficient:", dice_coeff)
+    print("Jaccard index:", jaccard_ind)
+    print("Volumetric difference:", vol_difference)
+    print("Hausdorff Distance:", hausdorff_dist)
+
+    results_list.append([f'Case {case[0]} vs {case[1]}', dice_coeff, jaccard_ind, vol_difference, hausdorff_dist])
+
+
+dataframe_metrics = pd.DataFrame(results_list, columns=['Case of comparison', 'Dice Similarity Coefficient', 'Jaccard Index', 'Volumetric difference', "Hausdorff Distance"])
+dataframe_metrics.to_excel('results_metrics.xlsx', index=False)
