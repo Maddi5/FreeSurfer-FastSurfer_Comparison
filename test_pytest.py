@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import numpy as np
-import nibabel as nib
 import pytest
 from math import isclose, pi
 
@@ -38,12 +37,7 @@ def test_load_volume_transpose():
     Aim: check if the values are correctly trasposed
     """
 
-    test_volume = np.array([[[0, 1], [2, 4]],
-                           [[3, 0], [1, 2]]])
-    
-    nib.save(nib.Nifti1Image(test_volume, np.eye(4)), 'test_volume.mgz') 
-
-    loaded_volume = load_volume('test_volume.mgz')
+    loaded_volume = load_volume('Test_volumes/test_input_volume.mgz')
 
     #transposed and binarized input image
     expected_output = np.array([[[1, 0], [0, 1]],
@@ -69,12 +63,8 @@ def test_load_volume_empty_image():
     Aim: Check the function to raise an exception when input image is empty 
     """
  
-    # create a test image with null values
-    empty_image = np.zeros((2, 2, 2))
-    nib.save(nib.Nifti1Image(empty_image, np.eye(4)), 'empty_image.mgz')
-
     try:
-        load_volume('empty_image.mgz')
+        load_volume('Test_volumes/empty_volume.mgz')
     except ValueError:
         assert True
     else:
