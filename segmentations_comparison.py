@@ -143,12 +143,64 @@ for case in cases:
 
 
 
+    #on the entire volume
+
     #Compute mean, standard deviation, total sum
     mean = np.mean(difference_matrix)
     standard_deviation = np.std(difference_matrix)
     total_sum = np.sum(difference_matrix)
 
+    #To give a general idea to the user, not to be saved
     print(f"Difference matrix {case[0]} vs {case[1]}:")
     print(f"Mean: {mean}")
     print(f"Standard Deviation: {standard_deviation}")
     print(f"Total Sum: {total_sum}")
+
+
+
+
+    #slice by slice
+
+    #iterate over the three planes
+    for plane, axis in [('axial', 0), ('coronal', 1), ('sagittal', 2)]:
+
+        differences = []
+
+
+        #Iterate over the slices
+        for i in range(difference_matrix.shape[axis]):
+
+            #select in which direction to move to "cut" the brain
+            if axis == 0:
+                slice = difference_matrix[i, :, :]
+            elif axis == 1:
+                slice = difference_matrix[:, i, :]
+            elif axis == 2:
+                slice = difference_matrix[:, :, i]
+
+
+
+            # Sum of the difference matrix in that slice
+            slice_sum = np.sum(slice)
+
+
+            #Apply the absolute value to compute the total number of different pixels in that slice
+            slice_num_diff = np.sum(np.abs(slice))
+
+            slice_total_pixels = slice.shape[0]*slice.shape[1] # take always the same axis because it's symmetric in 3D
+
+            # Compute the percentage of different pixels in that slice
+            perc_diff = (slice_num_diff / slice_total_pixels) * 100
+
+
+            #Add all the results to the list for that slice
+            differences.append([i, slice_num_diff, perc_diff, slice_sum])
+
+
+        # Save the results for all the slices in a dataframe
+        print(f"Saving dataframe for {plane} view, case {case[0]} vs {case[1]}")
+
+        dataframe_slices = pd.DataFrame(differences, columns = ["Slice", "# Different pixels", "% Different pixels", "Total sum"])
+        dataframe_slices.to_excel(f"Differences_{case[0]}_vs_{case[1]}_{plane}.xlsx", index=False)
+
+
