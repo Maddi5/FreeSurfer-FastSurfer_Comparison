@@ -140,3 +140,15 @@ for case in cases:
     difference_matrix = data1 - data2  # 3D matrix made of 0, 1 e -1
     
     np.save(f'difference_matrix_{case[0]}_vs_{case[1]}.npy', difference_matrix)
+
+
+
+    #Compute mean, standard deviation, total sum
+    mean = np.mean(difference_matrix)
+    standard_deviation = np.std(difference_matrix)
+    total_sum = np.sum(difference_matrix)
+
+    print(f"Difference matrix {case[0]} vs {case[1]}:")
+    print(f"Mean: {mean}")
+    print(f"Standard Deviation: {standard_deviation}")
+    print(f"Total Sum: {total_sum}")
