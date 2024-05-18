@@ -121,4 +121,4 @@ for case in cases:
 
 
 dataframe_metrics = pd.DataFrame(results_list, columns=['Case of comparison', 'Dice Similarity Coefficient', 'Jaccard Index', 'Volumetric difference', "Hausdorff Distance"])
-dataframe_metrics.to_excel('results_metrics.xlsx', index=False)
+dataframe_metrics.to_excel('Results/results_metrics.xlsx', index=False)
