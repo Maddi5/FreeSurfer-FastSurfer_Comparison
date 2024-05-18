@@ -122,3 +122,21 @@ for case in cases:
 
 dataframe_metrics = pd.DataFrame(results_list, columns=['Case of comparison', 'Dice Similarity Coefficient', 'Jaccard Index', 'Volumetric difference', "Hausdorff Distance"])
 dataframe_metrics.to_excel('Results/results_metrics.xlsx', index=False)
+
+
+
+
+
+
+
+
+
+# Difference matrix
+
+for case in cases:
+
+    data1, data2 = data[case[0]], data[case[1]]
+
+    difference_matrix = data1 - data2  # 3D matrix made of 0, 1 e -1
+    
+    np.save(f'difference_matrix_{case[0]}_vs_{case[1]}.npy', difference_matrix)
