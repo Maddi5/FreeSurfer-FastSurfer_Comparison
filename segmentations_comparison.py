@@ -139,7 +139,7 @@ for case in cases:
 
     difference_matrix = data1 - data2  # 3D matrix made of 0, 1 e -1
     
-    np.save(f'difference_matrix_{case[0]}_vs_{case[1]}.npy', difference_matrix)
+    np.save(f'Results/difference_matrix_{case[0]}_vs_{case[1]}.npy', difference_matrix)
 
 
 
@@ -201,6 +201,6 @@ for case in cases:
         print(f"Saving dataframe for {plane} view, case {case[0]} vs {case[1]}")
 
         dataframe_slices = pd.DataFrame(differences, columns = ["Slice", "# Different pixels", "% Different pixels", "Total sum"])
-        dataframe_slices.to_excel(f"Differences_{case[0]}_vs_{case[1]}_{plane}.xlsx", index=False)
+        dataframe_slices.to_excel(f"Results/Differences_{case[0]}_vs_{case[1]}_{plane}.xlsx", index=False)
 
 
