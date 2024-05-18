@@ -78,6 +78,8 @@ def get_largest_CC(segmentation):
 
 
 # Loading volumes
+print("\nLoading volumes...\n")
+
 input_volumes= {
     'FreeSurfer': load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'),
     'FreeSurfer_auto': load_volume('Simulated_Data/Simulated_FreeSurfer_auto.mgz'),
@@ -94,14 +96,16 @@ data = {
 
 
 
-
 #Define cases of comparison
 cases = [('FreeSurfer', 'FreeSurfer_auto'), ('FreeSurfer', 'FastSurfer'), ('FreeSurfer_auto', 'FastSurfer')]
 
 
 
-results_list = []
 
+
+print("\nComputing the metrics for each case of comparison...")
+
+results_list = []
 
 #Compute the metrics in each case of comparison
 for case in cases:
@@ -111,7 +115,7 @@ for case in cases:
     vol_difference = volumetric_difference(data[case[0]], data[case[1]])
     hausdorff_dist = Hausdorff_distance(data[case[0]], data[case[1]])
 
-    print(f"Case {case[0]} vs {case[1]}:")
+    print(f"\nCase {case[0]} vs {case[1]}:")
     print("Dice Similarity Coefficient:", dice_coeff)
     print("Jaccard index:", jaccard_ind)
     print("Volumetric difference:", vol_difference)
@@ -132,8 +136,12 @@ dataframe_metrics.to_excel('Results/results_metrics.xlsx', index=False)
 
 
 # Difference matrix
+print()
+print("\nComputing difference matrix...\n")
 
 for case in cases:
+
+    print(f"Case {case[0]} vs {case[1]}:")
 
     data1, data2 = data[case[0]], data[case[1]]
 
@@ -151,10 +159,10 @@ for case in cases:
     total_sum = np.sum(difference_matrix)
 
     #To give a general idea to the user, not to be saved
-    print(f"Difference matrix {case[0]} vs {case[1]}:")
     print(f"Mean: {mean}")
     print(f"Standard Deviation: {standard_deviation}")
     print(f"Total Sum: {total_sum}")
+    print()
 
 
 
@@ -162,7 +170,9 @@ for case in cases:
     #slice by slice
 
     #iterate over the three planes
-    for plane, axis in [('axial', 0), ('coronal', 1), ('sagittal', 2)]:
+    for plane, axis in [('Axial', 0), ('Coronal', 1), ('Sagittal', 2)]:
+
+        print(f"{plane} plane")
 
         differences = []
 
@@ -198,7 +208,7 @@ for case in cases:
 
 
         # Save the results for all the slices in a dataframe
-        print(f"Saving dataframe for {plane} view, case {case[0]} vs {case[1]}")
+        print(f"Saving dataframe for {plane} view\n")
 
         dataframe_slices = pd.DataFrame(differences, columns = ["Slice", "# Different pixels", "% Different pixels", "Total sum"])
         dataframe_slices.to_excel(f"Results/Differences_{case[0]}_vs_{case[1]}_{plane}.xlsx", index=False)
