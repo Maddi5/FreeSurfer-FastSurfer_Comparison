@@ -5,7 +5,7 @@ import pandas as pd
 
 
 
-def create_bar_plot(data, view, x_lim):
+def create_bar_plot(data, view):
 
     fig = plt.figure(figsize=(10,7))
 
@@ -24,8 +24,13 @@ def create_bar_plot(data, view, x_lim):
         plt.xlabel('Slice')
         plt.ylabel('Total sum of differences')
         plt.title(f'{cases[i][0]} vs {cases[i][1]}')
-        plt.xlim(x_lim)
-        plt.xticks(range(x_lim[0], x_lim[1], 10))
+
+        non_zero_indices = dataframe[dataframe['Total sum'] != 0].index
+        x_min = round(dataframe.loc[non_zero_indices[0], 'Slice'], -1)
+        x_max = round(dataframe.loc[non_zero_indices[-1], 'Slice'], -1)
+        plt.xlim(x_min-10, x_max+10)
+        plt.xticks(range(x_min-10, x_max+10, 10))
+
         y_min = round(int(dataframe['Total sum'].min()), -1)
         y_max = round(int(dataframe['Total sum'].max()), -1)
         plt.yticks(range(y_min, y_max, 100))
@@ -64,12 +69,12 @@ print("Computing bar plots...")
 
 # Axial
 print("Axial view")
-create_bar_plot(data_axial, 'Axial', (35, 170))
+create_bar_plot(data_axial, 'Axial')
 
 # Coronal
 print("Coronal view")
-create_bar_plot(data_coronal, 'Coronal', (45, 220))
+create_bar_plot(data_coronal, 'Coronal')
 
 # Sagittal
 print("Sagittal view")
-create_bar_plot(data_sagittal, 'Sagittal', (60, 200))
+create_bar_plot(data_sagittal, 'Sagittal')
