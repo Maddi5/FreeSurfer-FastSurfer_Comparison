@@ -45,7 +45,7 @@ def create_bar_plot(data, view):
 
 
 
-def create_line_plot(data, view, x_lim):
+def create_line_plot(data, view):
 
     plt.figure(figsize=(10, 7))
 
@@ -55,8 +55,13 @@ def create_line_plot(data, view, x_lim):
 
     plt.xlabel('Slice')
     plt.ylabel('% of different pixels')
-    plt.xlim(x_lim)
-    plt.xticks(range(x_lim[0], x_lim[1], 10))
+
+    non_zero_indices = dataframe[dataframe['Percentage difference'] != 0].index
+    x_min = round(dataframe.loc[non_zero_indices[0], 'Slice'], -1)
+    x_max = round(dataframe.loc[non_zero_indices[-1], 'Slice'], -1)
+    plt.xlim(x_min-20, x_max+20)
+    plt.xticks(range(x_min-20, x_max+20, 10))
+
 
     #Captions dimensions
     plt.rc('axes', labelsize=15)    # title
@@ -115,15 +120,15 @@ print("\nComputing line plots...")
 
 # Axial
 print("Axial view")
-create_line_plot(data_axial, 'Axial', (15, 195))
+create_line_plot(data_axial, 'Axial')
 
 # Coronal
 print("Coronal view")
-create_line_plot(data_coronal, 'Coronal', (25, 240))
+create_line_plot(data_coronal, 'Coronal')
 
 # Sagittal
 print("Sagittal view")
-create_line_plot(data_sagittal, 'Sagittal', (40, 220))
+create_line_plot(data_sagittal, 'Sagittal')
 
 
 
