@@ -62,12 +62,13 @@ def create_line_plot(data, view):
     plt.xlim(x_min-20, x_max+20)
     plt.xticks(range(x_min-20, x_max+20, 10))
 
+    plt.title(f'{view} view')
 
     #Captions dimensions
     plt.rc('axes', labelsize=15)    # title
     plt.rc('xtick', labelsize=8)    # Labels on x
     plt.rc('ytick', labelsize=8)    # Labels on y
-    plt.rc('legend', fontsize=7)    # Legend dimension
+    plt.rc('legend', fontsize=8)    # Legend dimension
 
 
 
@@ -75,7 +76,6 @@ def create_line_plot(data, view):
     plt.savefig(f'Results/% Different_pixel_{view}.png')
 
     plt.show()
-    print()
 
 
 
