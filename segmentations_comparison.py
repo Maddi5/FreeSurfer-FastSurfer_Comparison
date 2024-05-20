@@ -210,7 +210,7 @@ for case in cases:
         # Save the results for all the slices in a dataframe
         print(f"Saving dataframe for {plane} view\n")
 
-        dataframe_slices = pd.DataFrame(differences, columns = ["Slice", "# Different pixels", "% Different pixels", "Total sum"])
+        dataframe_slices = pd.DataFrame(differences, columns = ["Slice", "# different pixels", "Percentage difference", "Total sum"])
         dataframe_slices.to_excel(f"Results/Differences_{case[0]}_vs_{case[1]}_{plane}.xlsx", index=False)
 
 
