@@ -9,12 +9,6 @@ def create_bar_plot(data, view):
 
     fig = plt.figure(figsize=(10,7))
 
-    # Captions dimensions
-    plt.rc('axes', titlesize=9)    # title
-    plt.rc('axes', labelsize=7)    # axis labels
-    plt.rc('xtick', labelsize=6)    # Labels on x
-    plt.rc('ytick', labelsize=6)    # Labels on y
-
     for i, dataframe in enumerate(data):
 
         plt.subplot(2, 2, i+1)
@@ -35,7 +29,12 @@ def create_bar_plot(data, view):
         y_max = round(int(dataframe['Total sum'].max()), -1)
         plt.yticks(range(y_min, y_max, 100))
 
-
+    # Captions dimensions
+    plt.rc('axes', titlesize=9)    # title
+    plt.rc('axes', labelsize=7)    # axis labels
+    plt.rc('xtick', labelsize=6)    # Labels on x
+    plt.rc('ytick', labelsize=6)    # Labels on y
+    
     fig.suptitle(f'{view} view', fontsize=12)
 
     print("Saving the plot...")
