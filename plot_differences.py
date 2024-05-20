@@ -45,6 +45,33 @@ def create_bar_plot(data, view):
 
 
 
+def create_line_plot(data, view, x_lim):
+
+    plt.figure(figsize=(10, 7))
+
+    for i, dataframe in enumerate(data):
+
+        sns.lineplot(x = "Slice", y = "Percentage difference", data=dataframe, label = f'Case {cases[i][0]} vs {cases[i][1]}')
+
+    plt.xlabel('Slice')
+    plt.ylabel('% of different pixels')
+    plt.xlim(x_lim)
+    plt.xticks(range(x_lim[0], x_lim[1], 10))
+
+    #Captions dimensions
+    plt.rc('axes', labelsize=15)    # title
+    plt.rc('xtick', labelsize=8)    # Labels on x
+    plt.rc('ytick', labelsize=8)    # Labels on y
+    plt.rc('legend', fontsize=7)    # Legend dimension
+
+
+
+    print("Saving the plot...")
+    plt.savefig(f'Results/% Different_pixel_{view}.png')
+
+    plt.show()
+    print()
+
 
 
 #Define cases of comparison
@@ -65,7 +92,7 @@ data_sagittal = [pd.read_excel(f"Results/Differences_{case[0]}_vs_{case[1]}_Sagi
 
 
 # Bar plots
-print("Computing bar plots...")
+print("\nComputing bar plots...")
 
 # Axial
 print("Axial view")
@@ -78,3 +105,25 @@ create_bar_plot(data_coronal, 'Coronal')
 # Sagittal
 print("Sagittal view")
 create_bar_plot(data_sagittal, 'Sagittal')
+
+
+
+
+
+#Line plots
+print("\nComputing line plots...")
+
+# Axial
+print("Axial view")
+create_line_plot(data_axial, 'Axial', (15, 195))
+
+# Coronal
+print("Coronal view")
+create_line_plot(data_coronal, 'Coronal', (25, 240))
+
+# Sagittal
+print("Sagittal view")
+create_line_plot(data_sagittal, 'Sagittal', (40, 220))
+
+
+
