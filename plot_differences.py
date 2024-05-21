@@ -142,10 +142,12 @@ create_line_plot(data_sagittal, 'Sagittal')
 
 #Difference matrix
 
-difference_matrix_A = np.load(f'Results/difference_matrix_FreeSurfer_vs_FreeSurfer_auto.npy')  
-difference_matrix_B = np.load(f'Results/difference_matrix_FreeSurfer_vs_FastSurfer.npy')  
-difference_matrix_C = np.load(f'Results/difference_matrix_FreeSurfer_auto_vs_FastSurfer.npy')  
-difference_matrix = [difference_matrix_A, difference_matrix_B, difference_matrix_C]
+difference_matrices = []
+
+for case in cases:
+    difference_matrix = np.load(f'Results/difference_matrix_{case[0]}_vs_{case[1]}.npy')
+    difference_matrices.append(difference_matrix)
+
 
 
 #set the slices to see
@@ -156,7 +158,8 @@ projection_names = ['Axial', 'Coronal', 'Sagittal']
 
 
 # For each case
-for i, diff_matrix in enumerate(difference_matrix):
+for i, diff_matrix in enumerate(difference_matrices):
+
     print(f"Case {case_names[i]}")
 
     # For each projection
