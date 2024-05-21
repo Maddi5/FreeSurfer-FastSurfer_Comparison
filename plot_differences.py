@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -34,7 +35,7 @@ def create_bar_plot(data, view):
     plt.rc('axes', labelsize=7)    # axis labels
     plt.rc('xtick', labelsize=6)    # Labels on x
     plt.rc('ytick', labelsize=6)    # Labels on y
-    
+
     fig.suptitle(f'{view} view', fontsize=12)
 
     print("Saving the plot...")
@@ -75,6 +76,9 @@ def create_line_plot(data, view):
     plt.savefig(f'Results/% Different_pixel_{view}.png')
 
     plt.show()
+
+
+
 
 
 
@@ -131,3 +135,56 @@ create_line_plot(data_sagittal, 'Sagittal')
 
 
 
+
+
+
+
+
+#Difference matrix
+
+difference_matrix_A = np.load(f'Results/difference_matrix_FreeSurfer_vs_FreeSurfer_auto.npy')  
+difference_matrix_B = np.load(f'Results/difference_matrix_FreeSurfer_vs_FastSurfer.npy')  
+difference_matrix_C = np.load(f'Results/difference_matrix_FreeSurfer_auto_vs_FastSurfer.npy')  
+difference_matrix = [difference_matrix_A, difference_matrix_B, difference_matrix_C]
+
+
+#set the slices to see
+slice_index = list(range(100, 120, 10))
+
+case_names = ['A', 'B', 'C']
+projection_names = ['Axial', 'Coronal', 'Sagittal']
+
+
+# For each case
+for i, diff_matrix in enumerate(difference_matrix):
+    print(f"Case {case_names[i]}")
+
+    # For each projection
+    for k, projection in enumerate(projection_names):
+        print(f"{projection} view")
+        
+        # For each slice
+        for j in slice_index:
+            print(f"Slice {j}")
+            #Select the correct projection
+            if projection == 'Axial':
+                slice_data = diff_matrix[j, :, :]
+            elif projection == 'Coronal':
+                slice_data = diff_matrix[:, j, :]
+            elif projection == 'Sagittal':
+                slice_data = diff_matrix[:, :, j]
+
+
+            if np.any(slice_data != 0):
+
+                plt.figure(figsize=(8, 6))
+                plt.imshow(slice_data, cmap='coolwarm', aspect='auto')
+                plt.colorbar(label='Difference')
+                plt.title(f'Slice {j} {projection} plane ({case_names[i]})')
+                plt.xlabel('Voxel')
+                plt.ylabel('Voxel')
+
+                save_path = f'Results/{projection}_slice_{j}_{case_names[i]}.png'
+                plt.savefig(save_path)
+
+                plt.show()
