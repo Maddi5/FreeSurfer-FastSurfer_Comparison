@@ -141,6 +141,7 @@ create_line_plot(data_sagittal, 'Sagittal')
 
 
 #Difference matrix
+print("\nVisualising difference matrices...")
 
 difference_matrices = []
 
@@ -149,9 +150,23 @@ for case in cases:
     difference_matrices.append(difference_matrix)
 
 
+#Ask the user which slices to visualise
+while True:
+    try:
+        print("\nSelect which slices you want to visualise")
+
+        first = int(input("Enter the start of the slice range: "))
+        last = int(input("Enter the end of the slice range: "))
+        step = int(input("Enter the step for the slice range: "))
+
+        break
+
+    except ValueError:
+        print("Invalid input. Please enter an integer.")
+
 
 #set the slices to see
-slice_index = list(range(100, 120, 10))
+slice_index = list(range(first, last, step))
 
 case_names = ['A', 'B', 'C']
 projection_names = ['Axial', 'Coronal', 'Sagittal']
@@ -160,7 +175,7 @@ projection_names = ['Axial', 'Coronal', 'Sagittal']
 # For each case
 for i, diff_matrix in enumerate(difference_matrices):
 
-    print(f"Case {case_names[i]}")
+    print(f"\nCase {case_names[i]}")
 
     # For each projection
     for k, projection in enumerate(projection_names):
