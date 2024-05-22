@@ -155,9 +155,9 @@ while True:
     try:
         print("\nSelect which slices you want to visualise")
 
-        first = int(input("Enter the start of the slice range: "))
-        last = int(input("Enter the end of the slice range: "))
-        step = int(input("Enter the step for the slice range: "))
+        first = int(input("Enter the start of the slice range (>=0): "))
+        last = int(input("Enter the end of the slice range (<256): "))
+        step = int(input("Enter the step for the slice range (>0): "))
 
         break
 
