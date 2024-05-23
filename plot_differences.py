@@ -82,6 +82,47 @@ def create_line_plot(data, view):
 
 
 
+def create_3d_plot(difference_matrix, view_angle, output_filename, dpi):
+
+    fig = plt.figure(figsize=(8, 6))
+
+    ax = fig.add_subplot(projection='3d')
+
+    # Find coordinates of negative points
+    x1, y1, z1 = np.where(difference_matrix == -1)
+    # Find coordinates of positive points
+    x2, y2, z2 = np.where(difference_matrix == 1)
+
+    #plot negative points in blue
+    ax.plot(x1, y1, z1, 'b.', markersize=0.1, label = "FastSurfer")
+    #plot positive points in red
+    ax.plot(x2, y2, z2, 'r.', markersize=0.1, label = "FreeSurfer")
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    ax.set_xlim(0, 256)
+    ax.set_ylim(0, 256)
+    ax.set_zlim(0, 256)
+
+    ax.set_xticks(np.arange(0, 255, 50))
+    ax.set_yticks(np.arange(0, 255, 50))
+    ax.set_zticks(np.arange(0, 255, 250))
+
+    #Set elevation and azimuth angles
+    ax.view_init(*view_angle)
+
+    plt.savefig(output_filename, dpi = dpi)
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+
+
+
 #Define cases of comparison
 cases = [('FreeSurfer', 'FreeSurfer_auto'), ('FreeSurfer', 'FastSurfer'), ('FreeSurfer_auto', 'FastSurfer')]
 
@@ -140,7 +181,7 @@ create_line_plot(data_sagittal, 'Sagittal')
 
 
 
-#Difference matrix
+#Difference matrix 2D
 print("\nVisualising difference matrices...")
 
 difference_matrices = []
@@ -206,3 +247,21 @@ for i, diff_matrix in enumerate(difference_matrices):
                 plt.savefig(save_path)
 
                 plt.show()
+
+
+
+
+
+
+
+#Difference matrix 3D
+print("Visualizing 3D difference matrix for FreeSurfer-FastSurfer comparison...")
+
+# one side
+create_3d_plot(difference_matrices[1], (90, 0), f'Results/Difference_matrix_3D_{cases[1][0]}_vs_{cases[1][1]}_right.png', 800)
+# other side
+create_3d_plot(difference_matrices[1], (-90, -180), f'Results/Difference_matrix_3D_{cases[1][0]}_vs_{cases[1][1]}_left.png', 800)
+# from the bottom 
+create_3d_plot(difference_matrices[1], (-125, -25), f'Results/Difference_matrix_3D_{cases[1][0]}_vs_{cases[1][1]}_bottom.png', 1500)
+
+
