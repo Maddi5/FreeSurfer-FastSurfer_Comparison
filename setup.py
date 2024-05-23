@@ -33,6 +33,18 @@ def Setup_Script():
         import medpy
     except:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'medpy'])
+    try:
+        import matplotlib.pyplot
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'matplotlib'])
+    try:
+        import seaborn
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'seaborn'])
+    try:
+        import pandas
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pandas'])
 
     print('Using cpu: ' + str(os.cpu_count()))
     print('All good, off we go!')
