@@ -18,10 +18,33 @@ Setup_Script()
 
 
 def load_volume(filename): 
+
     """
-    Aim: load and prepare MRI volume for further processing
+    This function loads and prepares the input volume for further processing.
+
+    The function gets the data from the .mgz volumes and transpose them to adapt to the standard visualization.
+    Every non-zero label from the FreeSurfer/FastSurfer segmentation is then set equal to True.
+
+
+    Parameters
+    ----------
+    filename : str
+        The path to the .mgz file to be loaded.
+
+    Returns
+    -------
+    image_binary : numpy.ndarray
+        A binary volume.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the file specified by filename does not exist.
+    ValueError
+        If the input image contains only null values.
+
     """
- 
+
     try:
         image = nib.load(filename)
 
