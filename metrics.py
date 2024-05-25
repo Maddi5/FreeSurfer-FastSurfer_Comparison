@@ -77,6 +77,43 @@ def jaccard_index(seg1, seg2):
 
 def volumetric_difference(seg1, seg2):
 
+    """
+    Compute the volumetric difference between two binary volumes.
+
+    The volumetric difference is the difference between the volumes in the input images. The volumes are computed as the total number of voxels equal to 1.
+
+    Parameters
+    ----------
+    seg1 : numpy.ndarray
+        The first binary volume in the comparison.
+    seg2 : numpy.ndarray
+        The second binary volume in the comparison.
+
+    Returns
+    -------
+    vol_difference : int
+        The difference in volume (total number of voxels equal to 1) between the two input images.
+
+    Raises
+    ------
+    ValueError
+        If the volumes have different shapes.
+    ValueError
+        If the volumes contain values other than 0 and 1 (not binary).
+    ValueError
+        If both the volumes have only values equal to 0.
+    ValueError
+        If one of the volumes has only values equal to 0.
+
+    Examples
+    --------
+    >>> seg1 = np.array([[[1, 0], [0, 1]], [[0, 1], [0, 1]]])
+    >>> seg2 = np.array([[[1, 0], [1, 0]], [[0, 1], [1, 0]]])
+    >>> volumetric_difference(seg1, seg2)
+    0
+    """
+
+
     if seg1.shape != seg2.shape:
         raise ValueError("Input segmentations are of different shape")
 
