@@ -23,9 +23,9 @@ def test_load_volume_type_shape():
 
 
 
-def test_load_volume_segmented():
+def test_load_volume_binary():
     """
-    Aim: check that the output image is segmented
+    Aim: check that the output image is binary
     """
 
     assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1)), "Expected output volume to be segmented"
@@ -133,7 +133,7 @@ def test_get_largest_CC_full_input():
     assert np.array_equal(output_image, full_image), "Expected output to be the ssame as input for full input image"
 
 
-def test_get_largest_CC_no_binary():
+def test_get_largest_CC_not_binary():
         """
         Aim: check if it raises a ValueError when input image is not binary
         """
@@ -282,9 +282,9 @@ def test_jaccard_empty_segmentation():
 
 
 
-def test_jaccard_no_segmentations():
+def test_jaccard_not_binary():
     """
-    Aim: test that the function raises a ValueError if input volumes are not segmented
+    Aim: test that the function raises a ValueError if input volumes are not binary
     """
 
     seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
@@ -409,9 +409,9 @@ def test_volumetric_difference_different_shapes():
 
 
 
-def test_volumetric_difference_not_segmented():
+def test_volumetric_difference_not_binary():
     """
-    Aim: check that the function raises an error when input data are not segmented
+    Aim: check that the function raises an error when input data are not binary
     """
     seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
     seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
