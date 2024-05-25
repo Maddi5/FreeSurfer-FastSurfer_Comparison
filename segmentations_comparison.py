@@ -71,8 +71,34 @@ def load_volume(filename):
 
 
 def get_largest_CC(binary_volume):
+
     """
-    Aim: extract a binary image of the largest connected component (the brain)
+    Extract the largest connected component from a binary image.
+
+    This function identifies and extracts the largest connected component (assumed to be the brain)
+    from a given binary image. The input binary image is supposed to be the output from load_volume() function.
+
+    Parameters
+    ----------
+    binary_volume : numpy.ndarray
+        A 3D binary image where the brain and other structures are labelled as 1, and the background is labelled as 0.
+
+    Returns
+    -------
+    largest_conn_component : numpy.ndarray
+        A binary image of the same shape as `binary_volume` containing only the largest connected component (the brain).
+
+    Raises
+    ------
+    ValueError
+        If the input image is not a binary image.
+    ValueError
+        If no connected components are found in the input image.
+
+    Notes
+    -----
+    The function uses a cube connectivity structure of shape (3, 3, 3) to label connected components.
+    
     """
 
     #check if the input image is binary
