@@ -8,6 +8,47 @@ from skimage import metrics
 
 def jaccard_index(seg1, seg2):
 
+    """
+    Compute the Jaccard Index between two binary volumes.
+
+    The Jaccard Index is a similarity index, calculated as the intersection over the union of the two sets.
+    It ranges between 0 and 1, with 0 indicating no overlap and 1 complete overlap.
+
+    Parameters
+    ----------
+    seg1 : numpy.ndarray
+        The first binary volume in the comparison.
+    seg2 : numpy.ndarray
+        The second binary volume in the comparison.
+
+    Returns
+    -------
+    jacc_index : float
+        The Jaccard Index between the two input volumes.
+
+    Raises
+    ------
+    ValueError
+        If the volumes to compare have different shapes.
+    ValueError
+        If both the volumes have only values equal to 0.
+    ValueError
+        If one of the volumes has only values equal to 0.
+    ValueError
+        If the volumes contain values other than 0 and 1 (not binary).
+
+    Notes
+    ------
+    The intersection is computed as the product of the two binary images i.e. it is 1 only if both are 1.
+    The union is computed as the total number of ones in both the images minus the intersection.
+
+    Examples
+    --------
+    >>> seg1 = np.array([[[0, 1], [1, 0]], [[0, 0], [1, 1]]])
+    >>> seg2 = np.array([[[1, 1], [0, 0]], [[0, 1], [1, 0]]])
+    >>> jaccard_index(seg1, seg2)
+    0.3333333333333333
+    """
 
     if seg1.shape != seg2.shape:
         raise ValueError("Segmentations are of different shape")
@@ -30,6 +71,7 @@ def jaccard_index(seg1, seg2):
     jacc_index = intersection / union
     
     return jacc_index
+
 
 
 
