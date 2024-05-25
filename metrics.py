@@ -138,6 +138,46 @@ def volumetric_difference(seg1, seg2):
 
 def Hausdorff_distance(seg1,seg2):
 
+    """
+    Compute modified Hausdorff distance between non-zero elements of two binary volumes.
+
+    This function computes the modified Hausdorff distance between two sets [1]_.
+    The Hausdorff distance measures the extent to which each point of a segmentation set lies near some point of the other set
+
+    Parameters
+    ----------
+    seg1 : numpy.ndarray
+        The first binary volume in the comparison.
+    seg2 : numpy.ndarray
+        The second binary volume in the comparison. Must have the same shape of the first.
+
+    Returns
+    -------
+    hausdorff_dist : float
+        The modified Hausdorff distance between coordinates of nonzero pixels in the two input volumes.
+
+    Raises
+    ------
+    ValueError
+        If the input volumes have different shapes.
+    ValueError
+        If the volumes contain values other than 0 and 1 (not binary).
+    ValueError
+        If both the volumes have only values equal to 0.
+    ValueError
+        If one of the volumes has only values equal to 0.
+
+    Notes
+    -----
+    The Modified Hausdorff Distance has been shown to perform better than the directed Hausdorff Distance in the following work by Dubuisson et al. [2]_
+
+    References
+    ----------
+    .. [1] https://scikit-image.org/docs/stable/api/skimage.metrics.html#skimage.metrics.hausdorff_distance 
+    .. [2] M. P. Dubuisson and A. K. Jain. "A Modified Hausdorff distance for object matching". In ICPR94, pages A:566-568, Israel, 1994.
+
+    """
+
     if seg1.shape != seg2.shape:
         raise ValueError("Input data are of different shape. Hausdorff distance cannot be computed")
 
