@@ -13,10 +13,15 @@ from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 #LOAD_VOLUME
 
 def test_load_volume_type_shape():
+
     """
-    Aim: check type and shape of the output
+    Test that load_volume() returns the correct type and shape.
+
+    GIVEN: A valid .mgz file path.
+    WHEN: The load_volume function is called on the file in this path.
+    THEN: The function returns a numpy.ndarray with the shape (256, 256, 256).
+
     """
- 
     assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray), "Expected output type to be numpy.ndarray"
 
     assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == (256, 256, 256), "Expected loaded volume to have shape [256, 256, 256]"
@@ -24,17 +29,29 @@ def test_load_volume_type_shape():
 
 
 def test_load_volume_binary():
+
     """
-    Aim: check that the output image is binary
+    Test that load_volume() returns a binary volume.
+
+    GIVEN: A valid .mgz file path.
+    WHEN: The load_volume function is called on the file in this path.
+    THEN: The resulting volume is binary (containing only 0s and 1s).
+
     """
 
-    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1)), "Expected output volume to be segmented"
+    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1)), "Expected output volume to be binary"
 
 
 
 def test_load_volume_transpose():
+
     """
-    Aim: check if the values are correctly trasposed
+    Test that load_volume() correctly transposes the volume.
+
+    GIVEN: The .mgz file path of a test volume.
+    WHEN: The load_volume function is called on this file.
+    THEN: The resulting volume matches the expected transposed output.
+
     """
 
     loaded_volume = load_volume('Test_volumes/test_input_volume.mgz')
@@ -48,8 +65,14 @@ def test_load_volume_transpose():
 
 
 def test_load_volume_not_existent():
+
     """
-    Aim: check the function to have the right behaviour when the filename doesn't exist
+    Test that load_volume() raises a FileNotFoundError when the filename doesn't exist
+
+    GIVEN: An invalid .mgz file path.
+    WHEN: The load_volume function is called with this path.
+    THEN: A FileNotFoundError is raised with the appropriate message.
+
     """
     try:
         load_volume('non_existent_file.mgz')
@@ -59,8 +82,14 @@ def test_load_volume_not_existent():
 
 
 def test_load_volume_empty_image():
+
     """
-    Aim: Check the function to raise an exception when input image is empty 
+    Test that load_volume() raises a ValueError for an empty input image.
+
+    GIVEN: A .mgz file path of an empty volume.
+    WHEN: The load_volume function is called with this path.
+    THEN: A ValueError is raised
+
     """
  
     try:
@@ -69,6 +98,7 @@ def test_load_volume_empty_image():
         assert True
     else:
         assert False, "Expected ValueError when the image contains only null values"
+
 
 
 
