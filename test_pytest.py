@@ -238,8 +238,14 @@ def test_get_largest_CC_no_connected_components():
 #JACCARD_INDEX
 
 def test_jaccard_output():
+
     """
-    Aim: check that the function works properly in three easy cases
+    Test the jaccard_index function in three simple cases (no intersection, complete intersection, partial intersection)
+
+    GIVEN: Two binary volumes.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index for each case.
+
     """
 
     seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
@@ -256,8 +262,14 @@ def test_jaccard_output():
 
 
 def test_jaccard_large_volumes():
+
     """
-    Aim: check if the function is able to deal with large volumes
+    Test the jaccard_index function with large volumes.
+
+    GIVEN: Two large binary volumes for comparison.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index, even for large volumes.
+
     """
     #large volumes
     seg1 = np.ones((300, 300, 300))
@@ -273,9 +285,16 @@ def test_jaccard_large_volumes():
 
 
 def test_jaccard_complex_shapes():
+
     """
-    Aim: test if the function is able to deal with complex volumes (spheres as approximations of brains)
+    Test the jaccard_index function with complex shapes (spheres as approximations of brains)
+
+    GIVEN: Two binary volumes with complex shapes (spheres).
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index for these complex shapes.
+
     """
+
     seg1 = np.zeros((100, 100, 100))
     seg2 = np.zeros((100, 100, 100))
 
@@ -290,10 +309,12 @@ def test_jaccard_complex_shapes():
     seg2[mask_2] = 1
 
 
+    #Compute the jaccard index in an alternative way
     intersection_volume = np.sum(np.minimum(seg1, seg2))
     union_volume = np.sum(np.maximum(seg1, seg2))
     
     expected_jaccard = intersection_volume / union_volume
+
 
     assert jaccard_index(seg1, seg2) == expected_jaccard
 
@@ -302,9 +323,16 @@ def test_jaccard_complex_shapes():
 
 
 def test_jaccard_different_shapes():
+
     """
-    Aim: test if the function raises a ValueError when input are of different shapes
+    Test that the jaccard_index function raises a ValueError when inputs are of different shapes.
+
+    GIVEN: Two volumes of different shapes.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function raises a ValueError indicating that the shapes are different.
+
     """
+
     seg1 = np.zeros((5, 5, 5))
     seg2 = np.zeros((6, 6, 6))
 
@@ -317,9 +345,15 @@ def test_jaccard_different_shapes():
 
 
 
-def test_jaccard_empty_segmentation():
+def test_jaccard_empty_volumes():
+
     """
-    Aim: check that the function raises an error when passing one or two void segmentations
+    Test that the Jaccard Index function raises a ValueError for one or two empty volumes.
+
+    GIVEN: Binary volumes with one or both being empty.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function raises a ValueError indicating that the segmentation(s) is/are empty.
+
     """
    
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
@@ -349,8 +383,14 @@ def test_jaccard_empty_segmentation():
 
 
 def test_jaccard_not_binary():
+
     """
-    Aim: test that the function raises a ValueError if input volumes are not binary
+    Test that the jaccard_index function raises a ValueError if input volumes are non-binary.
+
+    GIVEN: Volumes that contain values other than 0 and 1.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function raises a ValueError indicating that the volumes are not binary.
+
     """
 
     seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
