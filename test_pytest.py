@@ -107,23 +107,36 @@ def test_load_volume_empty_image():
 #GET_LARGEST_CC
 
 def test_get_largest_CC_type_shape():
-        """
-        Aim: Check if the type and the shape of the output are the same as the input ones
-        """
-        input_image = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
 
-        output_image = get_largest_CC(input_image)
+    """
+    Test that get_largest_CC() returns the correct type and shape.
 
-        assert isinstance(output_image, np.ndarray), "Expected output type to be numpy.ndarray"
+    GIVEN: A valid output volume from load_volume function.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function returns a numpy.ndarray with the same shape as the input.
 
-        assert output_image.shape == input_image.shape, "Expected output shape to be the same as input"
+    """
+    input_image = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
+    
+    output_image = get_largest_CC(input_image)
+
+    assert isinstance(output_image, np.ndarray), "Expected output type to be numpy.ndarray"
+
+    assert output_image.shape == input_image.shape, "Expected output shape to be the same as input"
 
 
 
 def test_get_largest_CC_check_output():
+
     """
-    Aim: Check if the function correctly identifies the largest connected component
+    Test that get_largest_CC() correctly identifies the largest connected component.
+
+    GIVEN: A binary volume with two connected components.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function returns a volume with only the largest connected component among the two.
+
     """
+
     # Create an input image with two connected components
     input_image = np.zeros((9, 9, 9))
     input_image[1:2, 1:2, 1:2] = 1  # Smaller component
@@ -138,8 +151,14 @@ def test_get_largest_CC_check_output():
 
 
 def test_get_largest_CC_single_connected_component():
+
     """
-    Aim: Check if the function correctly handles an input image with a single connected component
+    Test that get_largest_CC() correctly handles an input image with a single connected component.
+
+    GIVEN: A binary volume with a single connected component.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function returns a volume identical to the input.
+
     """
 
     #Create image with a single connected component
@@ -153,33 +172,50 @@ def test_get_largest_CC_single_connected_component():
 
 
 def test_get_largest_CC_full_input():
+
     """
-    Aim: Check if the function correctly handles a full input image
+    Test that get_largest_CC() correctly handles a full input image.
+
+    GIVEN: An input volume where all elements are 1.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function returns a volume identical to the input.
+
     """
     full_image = np.ones((5, 5, 5))
 
     output_image = get_largest_CC(full_image)
 
-    assert np.array_equal(output_image, full_image), "Expected output to be the ssame as input for full input image"
+    assert np.array_equal(output_image, full_image), "Expected output to be the same as input for full input image"
 
 
 def test_get_largest_CC_not_binary():
-        """
-        Aim: check if it raises a ValueError when input image is not binary
-        """
-        
-        not_binary_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
 
-        try:
-            get_largest_CC(not_binary_image)
-        except ValueError as e:
-            assert str(e) == "Input image is not binary", "Expected ValueError when input image is not binary"
+    """
+    Test that get_largest_CC raises a ValueError for a non-binary input image.
+
+    GIVEN: A non-binary input volume.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function raises a ValueError with the correct error message.
+    """
+
+    not_binary_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
+
+    try:
+        get_largest_CC(not_binary_image)
+    except ValueError as e:
+        assert str(e) == "Input image is not binary", "Expected ValueError when input image is not binary"
 
 
 def test_get_largest_CC_no_connected_components():
+
+    """  
+    Test that get_largest_CC() raises a ValueError with an input image wiht no connected components.
+
+    GIVEN: A binary volume with no connected components.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function raises a ValueError with the correct error message.
     """
-    Aim: Check if the function correctly handles an input image with no connected components
-    """
+
     input_image = np.zeros((8, 8, 8))
     input_image[1, 1, 1] = 1
     input_image[5, 5, 5] = 1
