@@ -133,17 +133,17 @@ def test_get_largest_CC_full_input():
     assert np.array_equal(output_image, full_image), "Expected output to be the ssame as input for full input image"
 
 
-def test_get_largest_CC_no_segmentation():
+def test_get_largest_CC_no_binary():
         """
-        Aim: check if it raises a ValueError when input image is not segmented
+        Aim: check if it raises a ValueError when input image is not binary
         """
         
-        not_segmented_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
+        not_binary_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
 
         try:
-            get_largest_CC(not_segmented_image)
+            get_largest_CC(not_binary_image)
         except ValueError as e:
-            assert str(e) == "Input image is not segmented", "Expected ValueError when input image is not segmented"
+            assert str(e) == "Input image is not binary", "Expected ValueError when input image is not binary"
 
 
 def test_get_largest_CC_no_connected_components():

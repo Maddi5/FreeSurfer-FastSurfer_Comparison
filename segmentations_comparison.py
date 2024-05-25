@@ -39,7 +39,7 @@ def load_volume(filename):
     Raises
     ------
     FileNotFoundError
-        If the file specified by filename does not exist.
+        If the file specified by 'filename' does not exist.
     ValueError
         If the input image contains only null values.
 
@@ -70,20 +70,20 @@ def load_volume(filename):
 
 
 
-def get_largest_CC(segmentation):
+def get_largest_CC(binary_volume):
     """
     Aim: extract a binary image of the largest connected component (the brain)
     """
-    
-    #check if the input image is segmented
-    if not np.all((segmentation == 0) | (segmentation == 1)):
-        raise ValueError("Input image is not segmented")
+
+    #check if the input image is binary
+    if not np.all((binary_volume == 0) | (binary_volume == 1)):
+        raise ValueError("Input image is not binary")
     
     # to use cube connectivity
     cube = np.ones(shape=(3, 3, 3))
 
     #give a label to every connected component
-    conn_components, _ = connected_components(segmentation, structure=cube)
+    conn_components, _ = connected_components(binary_volume, structure=cube)
 
     #check if there aren't connected components
     if conn_components.max() == 0:
