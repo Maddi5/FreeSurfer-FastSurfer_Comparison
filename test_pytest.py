@@ -417,8 +417,14 @@ def test_jaccard_not_binary():
 
 #VOLUMETRIC DIFFERENCE
 def test_volumetric_difference_output():
+
     """
-    Aim: check that the function works properly in three easy cases
+    Test the volumetric_difference function with three simple cases.
+
+    GIVEN: The binary volumes for comparison.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference for each case.
+
     """
 
     seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [0, 0]]])
@@ -436,9 +442,15 @@ def test_volumetric_difference_output():
 
 
 def test_volumetric_difference_large_volumes():
+
     """
-    Aim: check if the function is able to deal with large volumes
+    Test the volumetric_difference function with large volumes.
+
+    GIVEN: Two large binary volumes for comparison.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference, even for large volumes.
     """
+
     #large volumes
     seg1 = np.ones((300, 300, 300))
     seg2 = np.ones((300, 300, 300))
@@ -454,9 +466,15 @@ def test_volumetric_difference_large_volumes():
 
 
 def test_volumetric_difference_complex_shapes():
+
     """
-    Aim: test if the function is able to deal with complex volumes (spheres as approximations of brains)
+    Test the volumetric_difference function with complex shapes (spheres as approximations of brains).
+
+    GIVEN: Two binary volumes with complex shapes (spheres).
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference for these complex shapes.
     """
+
     seg1 = np.zeros((100, 100, 100))
     seg2 = np.zeros((100, 100, 100))
 
@@ -473,10 +491,16 @@ def test_volumetric_difference_complex_shapes():
 
 
 
-def test_volumetric_difference_empty_segmentation():
+def test_volumetric_difference_empty_volumes():
+
     """
-    Aim: check that the function raises an error when passing one or two empty segmentations
+    Test that the volumetric_difference function raises a ValueError for empty input volumes.
+
+    GIVEN: Binary volumes with one or both being empty.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function raises a ValueError indicating the volume(s) is/are empty.
     """
+
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[1, 0], [0, 1]], [[1, 0], [1, 1]]])
 
@@ -502,9 +526,16 @@ def test_volumetric_difference_empty_segmentation():
 
 
 def test_volumetric_difference_different_shapes():
+
     """
-    Aim: check that the function raises an error when input data are of different length
+    Test that the volumetric_difference function raises a ValueError for inputs with different shapes.
+
+    GIVEN: Two volumes of different shapes.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function raises a ValueError indicating the shapes are different.
+
     """
+
     seg1 = np.zeros((5, 5, 5))
     seg2 = np.zeros((6, 6, 6))
 
@@ -516,9 +547,16 @@ def test_volumetric_difference_different_shapes():
 
 
 def test_volumetric_difference_not_binary():
+
     """
-    Aim: check that the function raises an error when input data are not binary
+    Test that the volumetric_difference function raises a ValueError when input data are non-binary.
+
+    GIVEN: Volumes that contain values other than 0 and 1.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function raises a ValueError indicating the volumes are not binary.
+
     """
+
     seg1 = np.array([[[1, 0], [1, 1]], [[1, 0], [1, 0]]])
     seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
     seg3 = np.array([[[1, 0], [-1, 0]], [[1, 0], [1, 0]]])
