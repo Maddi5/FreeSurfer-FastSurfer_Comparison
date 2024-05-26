@@ -51,7 +51,7 @@ def jaccard_index(seg1, seg2):
     """
 
     if seg1.shape != seg2.shape:
-        raise ValueError("Segmentations are of different shape")
+        raise ValueError("Input volumes are of different shape")
 
     if np.sum(seg1) == 0 and np.sum(seg2) == 0:
         raise ValueError("Both of the segmentations are empty. Jaccard Index cannot be computed")
@@ -115,10 +115,10 @@ def volumetric_difference(seg1, seg2):
 
 
     if seg1.shape != seg2.shape:
-        raise ValueError("Input segmentations are of different shape")
+        raise ValueError("Input volumes are of different shape")
 
     if not np.all(np.isin(seg1, [0, 1])) or not np.all(np.isin(seg2, [0,1])):
-        raise ValueError("Segmentations contain values other than 0 and 1. Check input data")
+        raise ValueError("Input volumes contain values other than 0 and 1. Check input data")
     
     volume_1 = np.sum(seg1)
     volume_2 = np.sum(seg2)

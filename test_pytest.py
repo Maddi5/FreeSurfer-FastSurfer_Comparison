@@ -300,11 +300,11 @@ def test_jaccard_complex_shapes():
 
     y, x, z = np.ogrid[-50:50, -50:50, -50:50]
 
-    # Create a sphere in the first segmentation
+    # Create a sphere in the first volume
     mask_1 = x**2 + y**2 + z**2 <= 30**2
     seg1[mask_1] = 1
 
-    # Create a sphere in the second segmentation
+    # Create a sphere in the second volume
     mask_2 = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
     seg2[mask_2] = 1
 
@@ -339,7 +339,7 @@ def test_jaccard_different_shapes():
     try:
         jaccard_index(seg1, seg2)
     except ValueError as e:
-        assert str(e) == "Segmentations are of different shape", "Expected a ValueError when the segmentations are of different shape"
+        assert str(e) == "Input volumes are of different shape", "Expected a ValueError when the input volumes are of different shape"
 
 
 
@@ -542,7 +542,7 @@ def test_volumetric_difference_different_shapes():
     try:
         volumetric_difference(seg1, seg2)
     except ValueError as e:
-        assert str(e) == "Input segmentations are of different shape", "Expected a ValueError when the segmentations are of different shape"
+        assert str(e) == "Input volumes are of different shape", "Expected a ValueError when the input volumes are of different shape"
 
 
 
@@ -564,12 +564,12 @@ def test_volumetric_difference_not_binary():
     try:
         volumetric_difference(seg1, seg2)
     except ValueError as e:
-        assert str(e) == "Segmentations contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are not binary"
+        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are not binary"
 
     try:
         volumetric_difference(seg1, seg3)
     except ValueError as e:
-        assert str(e) == "Segmentations contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are negative"
+        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are negative"
 
 
 
@@ -626,9 +626,9 @@ def test_Hausdorff_3D_large_volumes():
 
 
 
-def test_Hausdorff_empty_segmentation():
+def test_Hausdorff_empty_volume():
     """
-    Aim: check that the function raises an error when passing one or two void segmentations
+    Aim: check that the function raises an error when passing one or two void volumes
 
     """
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
@@ -671,9 +671,9 @@ def test_Hausdorff_different_shapes():
 
 
 
-def test_Hausdorff_not_segmented():
+def test_Hausdorff_not_binary():
     """
-    Aim: check that the function raises an error when input data are not segmented
+    Aim: check that the function raises an error when input data are not binary
     """
     seg1 = np.array([1, 0, 0, 0, 1])
     seg2 = np.array([1, 0, 2, 0, 1])
