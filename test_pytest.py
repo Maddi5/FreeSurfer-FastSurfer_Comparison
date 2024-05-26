@@ -578,8 +578,14 @@ def test_volumetric_difference_not_binary():
 #HAUSDORFF DISTANCE
 
 def test_Hausdorff_2D():
+
     """
-    Aim: check if it works properly with 2D data (because it's easier)
+    Test the Hausdorff_distance function with 2D data.
+
+    GIVEN: Two binary 2D volumes for comparison.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function returns the correct Hausdorff distance.
+
     """
     seg1 = np.array([[1, 1], [0, 0]])
     seg2 = np.array([[1, 0], [0, 1]])
@@ -590,8 +596,14 @@ def test_Hausdorff_2D():
 
 
 def test_Hausdorff_3D_identical():
+
     """
-    Aim: check if the function works properly with identical 3D volumes
+    Test the Hausdorff_distance function with identical 3D volumes.
+
+    GIVEN: Two identical binary 3D volumes for comparison.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function returns a Hausdorff distance of 0.
+
     """
     
     seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [1, 0]]])
@@ -602,8 +614,13 @@ def test_Hausdorff_3D_identical():
 def test_Hausdorff_3D_single_point_segmentations():
 
     """
-    Aim: check if the function works porperly with simple 3D data
+    Test the Hausdorff_distance function with simple 3D data.
+
+    GIVEN: Two binary 3D volumes each containing a single non-zero point.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function returns the correct Hausdorff distance between the points.
     """
+
     seg1 = np.zeros((3, 3, 3))
     seg2 = np.zeros((3, 3, 3))
 
@@ -616,9 +633,15 @@ def test_Hausdorff_3D_single_point_segmentations():
 
 
 def test_Hausdorff_3D_large_volumes():
+
+    """    
+    Test the Hausdorff_distance function with large volumes.
+
+    GIVEN: Two large 3D volumes for comparison.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function returns the correct Hausdorff distance, even for large volumes.
     """
-    Aim: check if the function is able to deal with large volumes
-    """
+
     seg1 = np.ones((300, 300, 300))
     seg2 = np.ones((300, 300, 300))
     
@@ -627,10 +650,15 @@ def test_Hausdorff_3D_large_volumes():
 
 
 def test_Hausdorff_empty_volume():
-    """
-    Aim: check that the function raises an error when passing one or two void volumes
 
     """
+    Test that the Hausdorff_distance function raises a ValueError for empty input volumes.
+
+    GIVEN: Binary volumes with one or both being empty.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function raises a ValueError indicating the volume(s) is/are empty.
+    """
+
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[1, 1], [0, 1]], [[1, 0], [1, 1]]])
 
@@ -658,9 +686,15 @@ def test_Hausdorff_empty_volume():
 
 
 def test_Hausdorff_different_shapes():
+
     """
-    Aim: Check if the function raises an error if input volumes are of different shape
+    Test that the Hausdorff_distance function raises a ValueError for inputs with different shapes.
+
+    GIVEN: Two volumes of different shapes.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function raises a ValueError indicating that the shapes are different.
     """
+
     seg1 = np.zeros((300, 300, 300))
     seg2 = np.zeros((200, 200, 200))
 
@@ -672,9 +706,15 @@ def test_Hausdorff_different_shapes():
 
 
 def test_Hausdorff_not_binary():
+    
     """
-    Aim: check that the function raises an error when input data are not binary
+    Test that the Hausdorff_distance function raises a ValueError when input data are non-binary.
+
+    GIVEN: Volumes that contain values other than 0 and 1.
+    WHEN: The Hausdorff_distance function is called with these volumes.
+    THEN: The function raises a ValueError indicating the volumes are not binary.
     """
+
     seg1 = np.array([1, 0, 0, 0, 1])
     seg2 = np.array([1, 0, 2, 0, 1])
     seg3 = np.array([1, 0, -1, 0, 1])
