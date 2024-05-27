@@ -46,8 +46,69 @@ In order to run the code, the user needs to have the following packages installe
 * seaborn
 * medpy
 
-These dependencies are automatically installed when running the main code (`segmentatons_comparison.py`) through the call to the Setup_Script() function in the first lines.
+These dependencies are automatically installed when running the main code (`segmentations_comparison.py`) through the call to the Setup_Script() function in the first lines.
 
+
+
+
+
+## Scripts Overview
+
+### metrics.py
+
+This script contains functions to compute the following metrics between two binary volumes:
+
+- **Jaccard Index**: Measures the overlap between two sets.
+- **Volumetric Difference**: Measures the difference in volume between two sets.
+- **Hausdorff Distance**: Measures the distance between points in two sets.
+
+
+### segmentations_comparison.py
+
+This script performs the following steps:
+
+1. Load segmentation volumes from .mgz files
+2. Extract the largest connected component.
+3. Compute metrics (Dice Similarity Coefficient, Jaccard Index, Volumetric Difference, Hausdorff Distance), using the functions defined in `metrics.py` script.
+4. Save the metrics into an Excel file.
+5. Compute and save difference matrices.
+
+Run the script:
+
+```
+bash
+python segmentations_comparison.py
+
+```
+
+### plot_differences.py
+
+This script generates visualizations of the differences between segmentation volumes using the difference matrices saved by `segmentations_comparison.py`:
+
+- Bar plots of the total sum of differences for each slice in the three views.
+- Line plots of the percentage of different pixels for each slice in each view.
+- 2D plots of the difference matrices in each view in the slices selected by the user
+- 3D plots of the difference matrices.
+
+Run the script:
+
+```
+bash
+python plot_differences.py
+```
+
+## Usage
+Place your .mgz files in the FreeSurfer-FastSurfer_Comparison directory. Then substitute 'FreeSurfer.mgz', 'FreeSurfer_auto.mgz' and 'FastSurfer.mgz' with the names of your files in the following part of `segmentations_comparison.py` script:
+
+```
+input_volumes= {
+    'FreeSurfer': load_volume('FreeSurfer.mgz'),
+    'FreeSurfer_auto': load_volume('FreeSurfer_auto.mgz'),
+    'FastSurfer': load_volume('FastSurfer.mgz')
+}
+
+```
+Then run `segmentations_comparison.py` to compute the metrics and save the results, and `plot_differences.py` to generate and save the visualizations. The results will be saved in the `Results` folder.
 
 
 ## Running tests
