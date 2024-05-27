@@ -1,0 +1,97 @@
+\begin{thebibliography}{10}
+
+\bibitem{Franke2010}
+Katja Franke, Gabriel Ziegler, Stefan Klöppel, and Christian Gaser.
+\newblock Estimating the age of healthy subjects from t1-weighted mri scans
+  using kernel methods: Exploring the influence of various parameters.
+\newblock {\em NeuroImage}, 50:883--892, 4 2010.
+
+\bibitem{Franke2012}
+Katja Franke and Christian Gaser.
+\newblock Longitudinal changes in individual brainage in healthy aging, mild
+  cognitive impairment, and alzheimer's disease.
+\newblock {\em GeroPsych: The Journal of Gerontopsychology and Geriatric
+  Psychiatry}, 25:235--245, 1 2012.
+
+\bibitem{Zeighami2019}
+Yashar Zeighami, Seyed~Mohammad Fereshtehnejad, Mahsa Dadar, D.~Louis Collins,
+  Ronald~B. Postuma, Bratislav Mišić, and Alain Dagher.
+\newblock A clinical-anatomical signature of parkinson's disease identified
+  with partial least squares and magnetic resonance imaging.
+\newblock {\em NeuroImage}, 190:69--78, 4 2019.
+
+\bibitem{Cole2018}
+James~H. Cole, S.~J. Ritchie, M.~E. Bastin, M.~C.~Valdés Hernández, S.~Muñoz
+  Maniega, N.~Royle, J.~Corley, A.~Pattie, S.~E. Harris, Q.~Zhang, N.~R. Wray,
+  P.~Redmond, R.~E. Marioni, J.~M. Starr, S.~R. Cox, J.~M. Wardlaw, D.~J.
+  Sharp, and I.~J. Deary.
+\newblock Brain age predicts mortality.
+\newblock {\em Molecular Psychiatry}, 23:1385--1392, 5 2018.
+
+\bibitem{Cole2017d}
+James~H. Cole and Katja Franke.
+\newblock Predicting age using neuroimaging: Innovative brain ageing
+  biomarkers.
+\newblock {\em Trends in Neurosciences}, 40:681--690, 12 2017.
+
+\bibitem{Amoroso2019}
+Nicola Amoroso, Marianna~La Rocca, Loredana Bellantuono, Domenico Diacono,
+  Annarita Fanizzi, Eufemia Lella, Angela Lombardi, Tommaso Maggipinto, Alfonso
+  Monaco, Sabina Tangaro, and Roberto Bellotti.
+\newblock Deep learning and multiplex networks for accurate modeling of brain
+  age.
+\newblock {\em Frontiers in Aging Neuroscience}, 11, 2019.
+
+\bibitem{Cole2017a}
+James~H. Cole, Rudra~P.K. Poudel, Dimosthenis Tsagkrasoulis, Matthan~W.A. Caan,
+  Claire Steves, Tim~D. Spector, and Giovanni Montana.
+\newblock Predicting brain age with deep learning from raw imaging data results
+  in a reliable and heritable biomarker.
+\newblock {\em NeuroImage}, 163:115--124, 12 2017.
+
+\bibitem{Cole2017b}
+James~H. Cole, Tiina Annus, Liam~R. Wilson, Ridhaa Remtulla, Young~T. Hong,
+  Tim~D. Fryer, Julio Acosta-Cabronero, Arturo Cardenas-Blanco, Robert Smith,
+  David~K. Menon, Shahid~H. Zaman, Peter~J. Nestor, and Anthony~J. Holland.
+\newblock Brain-predicted age in down syndrome is associated with beta amyloid
+  deposition and cognitive decline.
+\newblock {\em Neurobiology of Aging}, 56:41--49, 8 2017.
+
+\bibitem{Cole2017c}
+James~H. Cole, Jonathan Underwood, Matthan~W.A. Caan, Davide~De Francesco,
+  Rosan A.~Van Zoest, Robert Leech, Ferdinand~W.N.M. Wit, Peter Portegies,
+  Gert~J. Geurtsen, Ben~A. Schmand, Maarten F.Schim Van~Der Loeff, Claudio
+  Franceschi, Caroline~A. Sabin, Charles~B.L.M. Majoie, Alan Winston, Peter
+  Reiss, and David~J. Sharp.
+\newblock Increased brain-predicted aging in treated hiv disease.
+\newblock {\em Neurology}, 88:1349--1357, 4 2017.
+
+\bibitem{Lombardi2021}
+Angela Lombardi, Alfonso Monaco, Giacinto Donvito, Nicola Amoroso, Roberto
+  Bellotti, and Sabina Tangaro.
+\newblock Brain age prediction with morphological features using deep neural
+  networks: Results from predictive analytic competition 2019.
+\newblock {\em Frontiers in Psychiatry}, 11, 1 2021.
+
+\bibitem{Bellantuono2021}
+Loredana Bellantuono, Luca Marzano, Marianna~La Rocca, Dominique Duncan, Angela
+  Lombardi, Tommaso Maggipinto, Alfonso Monaco, Sabina Tangaro, Nicola Amoroso,
+  and Roberto Bellotti.
+\newblock Predicting brain age with complex networks: From adolescence to
+  adulthood.
+\newblock {\em NeuroImage}, 225, 1 2021.
+
+\bibitem{Henschel_FastSurfer}
+Leonie Henschel, Sailesh Conjeti, Santiago Estrada, Kersten Diers, Bruce
+  Fischl, and Martin Reuter.
+\newblock Fastsurfer - a fast and accurate deep learning based neuroimaging
+  pipeline.
+\newblock {\em NeuroImage}, 219:117012, 2020.
+
+\bibitem{Bloch_FastSurfer}
+Louise Bloch and Christoph~M. Friedrich.
+\newblock Comparison of automated volume extraction with freesurfer and
+  fastsurfer for early alzheimer's disease detection with machine learning.
+\newblock pages 113--118, June 2021.
+
+\end{thebibliography}

@@ -1,0 +1,984 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\parindent0px
+\usepackage{geometry}
+\geometry{a4paper, top=20mm, left=25mm, right=25mm, bottom=20mm}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{amsfonts, amssymb, amsmath}
+\usepackage{caption}
+\captionsetup[figure]{font = small, labelfont = {it,bf}, textfont = it}
+\captionsetup[table]{font = small, labelfont = {it,bf}, textfont = it}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+
+\usepackage{hyperref}
+
+\usepackage{color}
+
+\title{\textbf{Brain age estimation and
+		\\FreeSurfer - FastSurfer comparison}}
+	
+\author{Maddalena Cavallo}
+\date{\textit{Pattern Recognition}}
+
+
+
+
+
+
+
+
+\begin{document}
+	
+	\maketitle % Per mettere il titolo 
+		
+	
+	
+	\section{Introduction}
+	\label{Introduction}
+	% Il cervello umano cambia nel tempo e invecchia
+	Human brain changes across the adult lifespan and undergoes complex aging effects that can change its structure and functioning. Normal brain development and healthy aging have been found to follow a specific pattern, consistent between different people, including a decrease of grey matter volume, an increase of white matter volume until the age of 20, when it reaches a plateau, and a complementary pattern in CSF (plateau and then increase) \cite{Franke2010}.
+	% Ci sono però dei cambiamenti diversi dal normale a volte
+	However, ageing does not affect all people uniformly and deviations from a typical brain ageing trajectory are sometimes observed. For example, from T1-weighted acquisitions it could happen that an individual shows an increased brain atrophy with respect to the majority of people of the same age.
+	\\
+	% Si è cercato dunque di trovare se c'è un link tra questo invecchiamento e malattie neurologiche. In particolare se queste differenze sono caratterizzanti per le malattie e se quindi possano essere utilizzate per prevederle
+	These heterogeneous aging processes have stimulated the onset of many researches that aim to study these aging processes and understand the biological links between ageing and diseases. In particular, researches try to study if, among these heterogeneous aging processes, there is a specific pattern in brains of people with a diagnosed neurological disease such as Alzheimer's Disease (AD) or Parkinson's Disease (PD) (\cite{Franke2012} \cite{Zeighami2019}).
+	Furthermore, recent evidences have shown that having an older-appearing brain relates to advanced physiological and cognitive ageing and an increased risk of mortality \cite{Cole2018}.
+	\\
+	Thus the underlying idea that leads these studies is that the extent to which someone deviates from healthy brain ageing trajectories could potentially indicate underlying problems in outwardly healthy people. By measuring how far an individual is from the healthy brain ageing trajectory, researchers hope to be able to quantify advanced and decelerated brain ageing and use this to predict individuals' future trajectories and subsequent risk of age associated health deterioration.
+	This has important consequences for future clinical applications as it will allow to make individualized predictions on patients, identifying people at greater risk of developing diseases and eventually of mortality during ageing. This could also have a great utility for testing potential treatments aimed to stop or at least slow down neurological disease progression.
+	\\
+	\\
+	Many different brain-based biological ageing biomarkers have been proposed, that may help to identify individuals with patterns that deviate from healthy brain ageing trajectories.
+	\\
+	One of these is the Brain Predicted Age Difference (Brain PAD), a biological marker that could be extracted from structural neuroimaging data. This biomarker relies on the distinction between an individual chronological age and biological age, with the latter being the hypothetical age that could be defined by measuring some aspects of the organism's biology. These two ages can differ: individuals can appear to be younger or older than their chronological age. Deviations between predicted and chronological age are known to occur in several neurodegenerative diseases. Brain Predicted Age Difference (or simply Brain Age) is the metric introduced to take into account their differences.
+	\\
+	Brain Age can be predicted in individuals from magnetic resonance imaging (MRI) data using Machine Learning approaches, that can make statistical analysis from MRI scans and model trajectories of healthy brain ageing. By learning the relationship between chronological age and patterns of data in a training dataset of healthy people, age predictions can be made in test datasets i.e. from people not included in the initial training. The design and development of fast and accurate age prediction models measuring brain age is crucial to provide systems that can be used in the clinical context.
+	\\
+	\\
+	Some of the most common Machine Learning methods are:
+	\begin{itemize}
+		\item Gaussian Process Regression, that combines different multivariate gaussian distributions in order to model non-linear relationships
+		\item Support Vector Regression (SVR) a method that aim to determine a cost function with deviations not larger than $\epsilon$ from each target point and each training point
+		\item Relevance Vector Regression (RVR), a bayesian alternative to SVR 
+		\item Random Forest (RF), an accurate and robust regression method that uses ensemble learning
+		\item  Deep Neural Networks, designed to learn accurate representations of provided observations
+		\item Ridge Regression, basically a least square method modified to be used in the case where independent variables suffer from multicollinearity
+		\item Lasso Regression, a method similar to Ridge regression that is able to retain only important features and exclude those yielding a negligible contribution to the model (feature selection)
+	\end{itemize}
+	%
+	%
+	The general analytic pipeline for brain age prediction with these multivariate methods is the following:
+	\begin{itemize}
+		\item [a)] Pre-processing: data transformation on training set images e.g. brain segmentation, normalization and registration to a common space
+		
+		\item[b)] Training: Pre-processed neuroimaging data, labelled with chronological age, are given to one of the machine learning regression models mentioned above to predict age. Each model defines some features (i.e. variables that has some relevance) that are extracted from images and used as predictors (independent variables) in the regression with the chronological age as the outcome (dependent variable).  At the end of this procedure the Machine Learning algorithm has defined a statistical model of healthy brain ageing.
+		
+		\item [c)] Validation: usually a cross validation procedure to assess the accuracy of the model. Accuracy metrics as Mean Absolute Error (MAE), Root Mean Squared Error (RMSE) and Pearson's correlation coefficient R are then computed to evaluate the performance of the age prediction model on the training dataset
+		
+		\item [d)] Testing: Once the brain age prediction model reaches a desired level of accuracy, model coefficients can be used to predict brain age in a test dataset i.e. completely new samples 
+		
+		\item[e)] Results: A metric such as brain predicted age difference is defined to quantify the discrepancy between the predicted age and the chronological age. This metric can help to identify acceleration or deceleration of individual brain ageing (see also Fig. \ref{Fig:brain age}) and could be used to evaluate the presence of diseases. If the analysis was performed on a test dataset of healthy people this could be another way to assess the accuracy of the model, again providing different metrics as MAE, RMSE and Pearson's correlation coefficient R.
+	\end{itemize}
+	
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.4\textwidth] {Grafico.png}
+		\caption{Brain age versus chronological age \cite{Cole2017d}}
+		\label{Fig:brain age}
+	\end{figure}
+
+	\textbf{Mean Absolute Error (MAE)} is computed as:
+	\begin{equation}
+		MAE = \frac{1}{N} \sum_{i = 1}^{N}{\left| y_i - \hat{y_i} \right|}
+	\end{equation}
+	with N sample size, $y_i$ chronological age and $\hat{y_i}$ the predicted brain age.
+	The MAE provides a direct way to assess the difference among the various learning methods and it was found to be the most meaningful measure for assessing the influence of different parameters \cite{Franke2010}. Usually also the \textbf{Root Mean Squared Error} is computed for comparison as the following:
+	\begin{equation}
+		RMSE = \sqrt{\frac{1}{N} \sum_{i = 1}^{N}{(y_i - \hat{y}_i)^2}}
+	\end{equation}
+	\\
+	\\
+	Finally, the formula for the computation of \textbf{Pearson's correlation coefficient} is:
+	\begin{equation}
+		R = \frac{
+			\sum_{i = 1}^{N}{(y_i - \bar{y}) (\hat{y_i} - \Bar{\hat{y}})}
+		}
+		{
+			\sqrt{\sum_{i = 1}^{N}{(y_i - \bar{y})^2 }} \sqrt{\sum_{i = 1}^{N}{(\hat{y_i} - \Bar{\hat{y}})^2 }}
+		}    
+	\end{equation}
+	
+	where $y_i$ is the chronological age, $\hat{y_i}$ is the predicted brain age and $\bar{y}$ and $\Bar{\hat{y}}$ are their means.
+	\\
+	\\
+	Metrics as MAE and RMSE take into account only the relative difference between observed and predicted values i.e. they tend to reproduce in age sub-samples the same behaviour they have on the entire dataset. This is not true for correlation coefficient, that is heavily affected by the overall range: when considering age sub-samples this range decreases and the resulting correlation became worse \cite{Amoroso2019}.
+	\\
+	\\
+	\\
+	In the recent years Machine Learning approaches have demonstrated the possibility to accurately predict age from brain MRI scans in healthy subjects.
+	
+	Cole et al. in \cite{Cole2017a}, for example, used Convolutional Neural Networks (CNN) on BAHC dataset (Brain Age Healthy Control).
+	One hindrance to clinical applications of brain age estimation is the time needed for doing data pre-processing before providing them to the machine learning algorithm. Furthermore, often assumptions not met by data are made in pre-processing to get more compact data. Thus they tried to use CNN not only on pre-processed data but also on raw data. 
+	% One drawback is that the training phase of a deep artificial neural network is computationally intensive and time consuming, but once trained, the model can be applied to new data in a matter of seconds.
+	They chose to perform the analysis also with a Gaussian Process Regression model, in order to have a performance comparison with a well-known high accuracy model for brain age prediction. Results of these analysis are shown in Fig. \ref{Fig:Performance_CNN}, where it could be seen that lowest MAE is achieved using GM data as input data and CNN method.
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {Performance_CNN.png}
+		\caption{MAE, R, $R^2$ and RMSE from \cite{Cole2017a}}
+		\label{Fig:Performance_CNN}
+	\end{figure}
+	
+	
+	
+	% heritability Togliere?
+	%Many aspects of brain ageing and susceptibility to age-related brain disease are thought to be under genetic influence. Therefore, demonstrating a brain ageing biomarker is sensitive to genetic influences gives some external, genetic, validity to the measure. Furthermore this motivates further research into specific candidate gene that provide biological target for pharmacological interventions.
+	
+	% Test retest reliability and between scanner reliability
+	Doing test-retest trials they found also that brain predicted age was highly reproducible, finding an intra-class correlation coefficient $ICC > 0.90$ for all analysis. This is crucial for any measure to be used in longitudinal and multi-centre studies and, potentially, in future clinical settings. 
+	\\
+	Actually, there is still a limitation for clinical usage: a MAE = 4-5 years is clearly an insufficient precision for doing estimates in individual case and making clinically-meaningful decisions. Thus further researches are necessary to reduce MAE in brain age estimation in healthy subjects.
+	\\ Another limitation of this method is that the complexity of CNN models prevents the possibility to provide a neuroanatomical interpretation of features used in brain age prediction.
+	\\
+	\\
+	% E in dataset con malattie
+	Neuroimaging-derived age predictions have also been explored in the context of different brain diseases. Using these models, deviations from healthy brain ageing have been identified for example in Down's Syndrome, Alzheimer's disease, Mild Cognitive Impairment and other diseases as HIV.
+	\\
+	In \cite{Cole2017b} they successfully employed a Gaussian Process Regression model to predict age in people with Down Syndrome and typically developing controls. Chronological age was then subtracted from brain-predicted age to generate a brain predicted age difference. On the training set they found R = 0.94, MAE = 5.02 years and RMSE = 6.31 years. Analyzing data from the DS group they found a mean brain-PAD significantly greater than controls, supporting the idea that DS is associated with premature structural brain aging.
+	
+	% HIV non è neurologico ma posso metterlo come ultieriore vantaggio di studiare la brain age
+	Gaussian Process Regression method was exploited also in \cite{Cole2017c}, where it was used to establish whether HIV disease as well is associated with abnormal levels of age-related brain atrophy. Prediction accuracy results very similar to the previous study with R = 0.94, MAE = 5.01 and RMSE = 6.31. HIV was indeed found to accentuate brain aging: mean brain PAD score in HIV-positive individuals was 2.15 years, while in HIV-negative individuals it was -0.87 years. 
+	
+	
+	
+	
+	A lot of studies were performed on Alzheimer's Disease patients, relying on the hypothesis that pathological atrophy in AD reflects an accelerated aging process.
+	\\
+	Franke et al. in \cite{Franke2010} analyzed Alzheimer's Disease Neuroimaging Initiative (ADNI) database  with both Relevant Vector Regression and Support Vector Regression methods.
+	Accuracy on an healthy dataset (IXI database) was found to be better when using RVR, obtaining R = 0.92 and MAE = 5 years. Size of the training dataset was found to have a strong effect on age estimation accuracy, finding MAE = 5.2 for half of the dataset and MAE = 5.6 years taking a quarter of the dataset. %(se vuoi c'è anche un grafico).
+	For the AD group, the mean Brain Age Gap was + 10 years, implying a systematically higher estimated brain age than true age.
+	% Solo se lo vuoi citare che ne parli dopo  Found to be scanner indipendent
+	\\ 
+	Brain predicted age measures were found again to be stable and reproducible, even across scanners. This allows to use Relevance Vector Regression algorithm also in longitudinal studies as presented by the same authors in \cite{Franke2012}. % anche loro fanno test retest tra l'altro su OASIS ma direi che non mi interessa rimetterlo nella relazione. L'accuracy sarà la stessa di quella sopra, hanno lo stesso metodo
+	They included all subjects from the ADNI database for whom at least the baseline scan and one follow-up scan were available and explored the patterns of longitudinal changes in individual brain age within a follow-up period of up to 4 years.
+	% Sono 400 soggetti
+	\\
+	Subjects were grouped as: NO (healthy subjects), sMCI (stable MCI), pMCI (progressive MCI, turned in AD after a certain amount of time) and AD (Alzheimer's Disease patients).
+	% Longitudinal changes were compared among the four diagnostic groups using an analyisis of variance (ANOVA).
+	% Results
+	% They found a baseline Brain Age score of: NO = -0.30 years, sMCI = -0.48 years, pMCI = 6.19 years and AD = 6.67 years but increased in the pMCI and AD groups, suggesting additional acceleration in brain aging in these latter groups.
+	% At the last MRI scan they found: NO = -0.06 years, sMCI = -0.38 years, pMCI = 8.96 years and AD = 9.02 years.
+	\\
+	Regarding NO and sMCI subjects, the estimated brain age at baseline did not differ significantly from the chronological age and the brain age score remained stable across the follow up period of up to 4 years, showing only normal age-related atrophy. Patients with AD and subjects who had converted to AD within 3 years (pMCI) showed instead accelerated brain atrophy by +6 years at baseline, and an additional increase with a score of about +9 years during the follow-up. This shows how accelerated age-related changes in brain atrophy are already evident also at the prodromal stage of AD i.e. MCI.
+	\\ The fit of the longitudinal changes in brain age results in the following changing rates (brain age years per follow up year): NO = 0.12, sMCI = 0.07, pMCI = 1.05, AD = 1.51.
+	These results suggest that the acceleration in brain aging in pMCI and AD found at baseline becomes even more accelerated during the next months and years.
+	Furthermore, accelerated brain aging was found to be related to prospective cognitive decline and disease severity.
+	% Implicazioni future
+	% The implication of these results is that this approach could potentially lead to improved identification of people at risk of faster degradation of brain structure and function and potential risk for AD, thus contributing to an early diagnosis of neurodegenerative diseases, and facilitate early treatment or a preventative intervention.
+	% Secondo me dà tante altre cose interessanti che non ho scritto, quindi se eventualmente sono alla ricerca di ispirazione per analisi da fare...
+	\\
+	\\
+	One important note should now be done on accuracy of different regression methods. As exposed in different studies such as in \cite{Amoroso2019} \cite{Cole2017a} \cite{Lombardi2021} , it turns out that the prediction error is not constant but is subject to significant changes when considering specific age ranges.
+	As an example, authors in \cite{Amoroso2019} divided the all data set (484 subjects, 7-80 years) in 4 age range subsamples and evaluated the regression accuracy as MAE and RMSE in each of them as shown in Fig. \ref{Fig:Performance_age}. Best results were obtained for younger subjects (age range 7-20) while the performance has a significant drop when considering groups with older subjects. Worst prediction accuracy was obtained in the age range 40-60, reflecting the high specificity and variability characterizing brain atrophy in these years.
+	% Ho tolto la correlazione
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.5\textwidth] {Performance_age.png}
+		\caption{MAE and RMSE in different age ranges \cite{Amoroso2019}}
+		\label{Fig:Performance_age}
+	\end{figure}
+	\\
+	This means that, although using analogous predictions models, results can severely be affected by the age range of the samples. As a consequence it would be better to make comparisons of performance accuracy between different methods considering various database with consistent age distribution.
+	For these reasons, there are different studies that make a comparison of different Machine Learning algorithms on the same database.
+	\\
+	For example, authors in \cite{Amoroso2019} introduced a method based on multiplex networks combined with deep learning regression and made a comparison of its performance  on the same dataset with state-of-the-art regression strategies such as Lasso Regression, Ridge Regression, Support Vector Machine and Random Forest regressions. Results are reported in Fig. \ref{Fig:Performance_comparison}. They found out that deep learning provides the most accurate model with respect to all the considered metrics.
+	% After deep learning, SVM gets the best results. 
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {Performance_comparison.png}
+		\caption{MAE, RMSE and R for different Machine Learning methods \cite{Amoroso2019}}
+		\label{Fig:Performance_comparison}
+	\end{figure}
+	% MA SONO TUTTI SANI??? PERCHé NON CARATTERIZZA NESSUNA MALATTIA Database: ABIDE, \textbf{ADNI}, IXI, ICBM and Beijing Normal University. They selected a dataset including 484 subjects in a uniform age range 7-80
+	
+	% Dependency from sample size
+	They studied also the sample size effect on the accuracy of the model, finding that as the sample size increases, predicting models tend to be more accurate (both in terms of MAE and R); when using 80 $\% $ of data, the DNN model performance reaches a robust plateau.
+	\\
+	Furthermore, their DNN model allows also to identify brain regions which seem to majorally affect the age prediction, identifying features that had a strategic role in the age prediction.
+	\\
+	\\
+	Deep neural network learning method was exploited also in Bellantuono et al. \cite{Bellantuono2021}, considering a simpler network model and using a database of 1112 individuals with age range 7-64 years. Results of performance comparison on the same database is shown in Fig. \ref{Fig:tabl}. Also in this case DNN is the best algorithm, supporting the hypothesis that Deep Neural Networks are an appropriate option to manage the intrinsic complexity of the brain and identify features which accurately predict its age.
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {Tab.png}
+		\caption{MAE, RMSE and R for different ML algorithms \cite{Bellantuono2021}}
+		\label{Fig:tabl}
+	\end{figure}
+	
+	
+	% In development age
+	In the same study the performance of the model in the development age was analyzed, considering a subset of subjects within the 7-20 age range, reporting MAE = 1.53 $\pm$ 0.02, RMSE = 1.94 $\pm$ 0.02 and R = 0.787 $\pm$ 0.006. As expected, MAE and RMSE showed an improvement while correlation worsened, as it suffers more from sample size reduction. This behaviour confirms the necessity to compare age prediction accuracy declared in different studies paying attention to the age distribution of examined cohort.
+	%Features
+	% provides Brain specific information about anatomical districts displaying relevant changes with aging. This result is remarkable, compared to other studies, in which an intuitive interpretation is often hindered by model complexity
+	% (they build the network and then do the learning considering as important feature the nodal strenght).
+	%They used the ABIDE (Autism Brain Imaging Data Exchange) dataset with 1112 individuals, age range 7-64 years, 17 international sites, mean 17 +/- 8 anni, which makes the data distribution highly right-skewed particularly challenging to analyze because of itsheterogeneity due to different acquisition sites and protocols.
+	%The proposed approach results accurate, robust and computationally efficient, despite the large and heterogenuous dataset used
+	% Cita anche \cite{Amoroso2019}. They also implemented a pipeline for brain age prediction exploiting deep learning. However age predictions were obtained on a smaller cohort of 484 individuals with an age distribution 7-80 years. The present analysis has significantly improved those results. Besides the differences in terms of performance and data, it is also remarkable that in the present study a different and simpler network model was adopted.
+	%
+	%Sample size (di nuovo)
+	% Investigating the effect of sample size on the performance, they found that accuracy experiences a continuous deterioration as the training sample size reduced. This trend can be accurately fitted by a power law. 
+	% Independent test
+	% No, Troppa roba
+	%They applied then the model learnt using the training set on an independent test set acquired with different scanners and protocols of 262 subjects whose age ranged from 7 to 40 years. They found MAE = 2.5 +/- 0.2, RMSE = 3.2 +/- 0.2 and R = 0.78 +/- 0.02. A statistically significant deterioration was detected in all reported metrics, even if for MAE and RMSE the results are compatible with those obtained in training within 2 standard deviations. Person correlation suffers a more evident deterioration, but this is somehow expected as it is well known that sample size affects correlation measures (number of observations).
+	\\ 
+	\\
+	Finally, feed-forward DNN on raw data was used by Lombardi et al. in \cite{Lombardi2021}. The database used in this article comes from Predictive Competition 2019 and is made of data of 2638 individuals from 17 sites. Competition aimed to achieve the lowest MAE for brain age prediction, while keeping the Spearman correlation between the brain age delta and the chronological age under 0.1. Performance results in training set are shown in Fig. \ref{Fig:Performance_competition}, where they are compared with the ones of other common techniques. Different performances are due to different classification approaches that identify different features as important descriptors.
+	
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {Table.png}
+		\caption{MAE and R for different ML models \cite{Amoroso2019}}
+		\label{Fig:Performance_competition}
+	\end{figure}
+	DNN was found to have the greatest homogeneity across different acquisition sites and the greatest stability over sample size variations and sample heterogeneous age distribution.
+	% Age gap dependency from age
+	\\The aim to minimize the Spearman correlation coefficient between age gap and chronological age was made to achieve an unbiased algorithm for brain age prediction. Although DNN models exhibit the lowest correlation values (R = 0.38), a systematic age underestimation in the age range 60-90 and overestimation in the age range 20-35 can be noticed. This variation of brain PAD as a function of age was found also in \cite{Cole2017a}. Thus, age bias correction techniques need to be further applied to achieve less biased models. Reporting a constant behaviour for different age bins is important to ensure the reliability and generalization of ML models.
+	
+	
+	
+	% Feature importance
+	% Finally, they tried to do a statistical evaluation of feature importance for the clinical interpretability of the results. Nice fig. 8, shows the overlapping between the feature ranking of each couple of algorithms for increasing number of features. Different classification approaches identify different descriptors (that is why they have different performances).
+	
+	
+	% Finally we can notice that in the last three articles DNN won. The intrinsic possibility to manage and model non-linear complex relationships offered by deep models seems to provide significant advantage when attempting to predict brain age.
+	% Competition winning algorithm
+	% Boh non voglio mettere troppa roba
+	% Predictive Analytics Competition 2019, an international challenge. Winning algorithm use DNN (di Peng e a. 2019), reporting MAE = 2.90 years on a testing cohort of 2638 subjects.
+	%
+	% The increasing interest in this field is shown by the appearence of international competitions, as the Predictive Competition 2019, that has two aims:
+	%
+	%Hold out test
+	%Come è possibile sia inferiore?
+	% They found on a hold out test MAE = 4.6, R = 0.91 outperforming the other ML strategies they compared with. Spearman coefficient was R = 0.4.
+	%
+	%
+	%\textbf{Commenti critici:}
+	%\begin{itemize}
+	% Sicuramente importante ma nè tempo nè voglia \item Quali riferimenti esterni per validare questa tecnica? Genetica \cite{Cole2017a}
+	%\item Testare la reliability between scanner e intra scanner penso \cite{Franke2012}
+	% \item metodi come il CNN non permettono di trovare quali specificità anatomiche caratterizzano una brain age aumentata, è solo un modello generale e complicato, quindi in pratica niente features :(. In teoria le DNN che utilizza Lombardi invece può caratterizzare le features, anche perchè è lui stesso che critica CNN. 
+	% \item Un altro issue è l'eterogeneità dei dati, ovvero che siano acquisiti in siti diversi
+	% \item Il coefficiente di correlazione ha un po' di problemi \cite{Amoroso2019}, quindi forse è meglio non usarlo nel confronto?
+	% \item Brain age condense whole brain voxwl wise information in a single number, it's like a black box. By not scrutinising which features of a brain scan are used to predict age, important neuroscientific information may be disregarded. On the ohter hand, interpreting weight maps derived from ML is complicated and does not offer straightforward interpretation. No one part of the brain is the sole drive of ageing: it's a global phenomenon. Second, age-related changes to the brain are sublte, non linear and spatially distributed and can vary between individuals. The advantage is that by using Ml the model can learn a range of different brain structures that may be healthy, avoiding to focus on an average, which is likely to be unrepresentative of any single individual.
+	% \item Choosing a model suitable for heterogeneous dataset requires high computational complexity
+	%future
+	% Use larger number of samples
+	%\end{itemize}
+	
+	
+	
+	
+	
+	
+	
+	
+	%\textbf{Punti di forza:}
+	%\begin{itemize}
+	%\item con CNN sei indipendente dall'età e da differenti scanner %\cite{Lombardi2021}
+	%\item Increasingly avaibility of datasets
+	% \end{itemize}
+	
+	
+	
+	
+	%Cose:
+	%Ma le considerazioni morfologiche che fanno sono utili?
+	
+	%Per il futuro non so se mi serviranno le considerazioni morfologiche che fanno in vari articoli
+	
+	
+	
+	%\section*{Techniques}
+	%\label{Techniques}
+	
+	%Different techniques are exploited in order to estimate the brain age. Some of them are in the following list:
+	%\begin{itemize}
+	% \item Support Vector Regression (SVR) in un confronto \cite{Franke2010} e \cite{Franke2012} \cite{Amoroso2019} \cite{Bellantuono2021}
+	%\item Relevance Vector Regression (RVR) \cite{Franke2012} \cite{Lombardi2021} \cite{Franke2010}
+	%\item Random Forest \cite{Lombardi2021} \cite{Amoroso2019} \cite{Bellantuono2021}
+	%\item Ridge Regression \cite{Amoroso2019} \cite{Bellantuono2021}
+	%\item Lasso Regression \cite{Lombardi2021} \cite{Cole2020} \cite{Amoroso2019} \cite{Bellantuono2021}
+	%\item Gaussian Process Regression \cite{Cole2017a} \cite{Cole2017b} %\cite{Cole2017c} \cite{Cole2018} Conversione delle immagini in una NXN similarity matrix. Once in similarity matrix form the training subjects' data were used as predictors in a Gaussian Process Regression with age as the outcome variable. Model accuracy was then assessed in ten-fold cross validation. Model coefficients learned during training were then applied to test data to make age predictions.
+	%\item Elastic Net \cite{Bellantuono2021}
+	%\item Convolutional Neural Networks (CNN) \cite{Cole2017a}
+	%\item Simple Fully Convolutional Network, fonte 48 nell'articolo con %tutti i confronti, vincitore della challenge
+	%    \item Curti
+	%\end{itemize}
+	
+	
+	
+	\newpage
+		\section{Segmentation pipelines - FreeSurfer and FastSurfer}
+	\label{Segmentation}
+	%
+	Many machine learning methods use automatic segmentation pipelines as preprocessing steps for further analysis.
+	% How can we do this?
+	Brain identification and segmentation can be made through software packages such as FreeSurfer and FastSurfer.   
+	
+	
+	FreeSurfer is a toolkit for the analysis and visualization of structural, functional, and diffusion neuroimaging data. Among different things, it allows the user to reconstruct cortical and subcortical volumes from 3D MRI volumes.
+	
+	The main FreeSurfer pipeline's drawback is that processing a single image is strongly time-consuming. To overcome this issue,  FastSurfer was introduced.	
+	FastSurfer is a fast and extensively validated deep-learning pipeline for fully automated processing of structural human brain MRIs. 
+	It consists of two main parts building upon each other:
+	\\
+	\begin{itemize}
+		\item FastSurferCNN: an advanced deep learning architecture capable of whole brain segmentation into 95 classes in under 1 minute, mimicking FreeSurfer’s anatomical segmentation and cortical parcellation
+		\item Recon-surf: full FreeSurfer alternative for cortical surface reconstruction, mapping of cortical labels and traditional point-wise and ROI thickness analysis in approximately 60 minutes
+	\end{itemize}
+	
+	
+	
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {FastSurfer}
+		\caption{FastSurfer pipeline \cite{Henschel_FastSurfer}}
+		\label{Fig: FastSurfer pipeline}
+	\end{figure}
+	
+	
+	Different studies were made in order to perform the comparison between the two software, regarding both runtime and quality of results. 
+	
+	For example, in \cite{Bloch_FastSurfer} authors used FreeSurfer and FastSurfer pipelines in order to extract volumetric features from MRI scans and compared execution times, finding that FastSurfer one was substantially smaller than FreeSurfer's (Fig. \ref{Fig: Execution_times}). 
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {Execution_times}
+		\caption{FreeSurfer - FastSurfer execution times comparison \cite{Bloch_FastSurfer}}
+		\label{Fig: Execution_times}
+	\end{figure}
+	
+	
+	Concerning the quality of results, in \cite{Henschel_FastSurfer} authors tested accuracy and reliability of FastSurfer vs FreeSurfer on different datasets, obtaining results in Fig. \ref{Fig: FastSurfer performances}.
+	\begin{figure} [h]
+		\centering
+		\includegraphics[width = 1\textwidth] {FastSurfer performances}
+		\caption{FastSurfer performances \cite{Henschel_FastSurfer}}
+		\label{Fig: FastSurfer performances}
+	\end{figure}
+	
+	
+	% Non è un problema che i risultati siano diversi, perchè abbiamo dataset diversi.
+	\newpage
+	Therefore FastSurfer is a valid and preferable alternative to FreeSurfer, as outputs are comparable (or even better) but runtimes are lower. These features make it possible to perform big data analysis and eventually to develop clinical applications. For these reasons FastSurfer's usage as a preprocessing step in ML methods is increasing throughout years. 
+	
+	In the following work, FreeSurfer and FastSurfer outputs will be compared, in order to verify the similarity and find critical points and main segmentation differences between the two pipelines.
+	
+	
+	
+	
+	
+	
+	
+	
+	\subsection{Dataset}
+	
+	Segmentation comparison was performed on data extracted from an MRI dataset of pediatric patients affected by sickle cell disease. In particular, three patient volumes were used as samples to perform the comparisons and analyze the results. In the following, these volumes will be referred as volume 1, 2 and 3.
+	
+	For both software \textsl{aseg.mgz} (\underline{a}utomatic \underline{s}egmentation of the \underline{e}ntire \underline{b}rain) outputs were used. For a further comparison, also \textsl{aseg.auto.mgz} FreeSurfer output was taken into account.
+	%(the output before any manual change).
+	
+	For each volume, comparisons were performed on these outputs taking two of them at time. In particular, in the following we will name comparisons as following:
+	\begin{itemize}
+		\item \textit{Case A}: FreeSurfer \textsl{aseg} $\Longleftrightarrow$ FreeSurfer \textsl{aseg.auto}
+		\item \textit{Case B}: FreeSurfer\textsl{ aseg} $\Longleftrightarrow$ FastSurfer
+		\item \textit{Case C}: FreeSurfer \textsl{aseg.auto} $\Longleftrightarrow$ FastSurfer
+	\end{itemize}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\newpage
+	\section{Data Analysis and Results}
+
+	\subsection{Statistics}
+	Some statistics were evaluated in order to make the comparison between different segmentations. These are Dice Similarity Coefficient, Jaccard Index and Hausdorff Distance.
+	\\
+	\\
+	\textbf{Dice Similarity Coefficient}
+	\\
+	\\
+	The Dice Similarity Coefficient (DSC) is a metric that measures the similarity between two sets of data; in this contest it is used to evaluate the segmentation performance of the deep learning networks. The Dice Coefficient ranges from 0 to 1, where 0 indicates no similarity and 1 indicates a perfect similarity. Thus in our case the higher the Dice coefficient, the more similar the two segmentations are.
+	\\ The Dice coefficient can mathematically be expressed as in Eq. \ref{Eq: Dice}, where $|A \cap B|$ represents the common elements between sets A and B, and $|A|$ represent the number of elements in set A (and likewise for set B). In our case, we can approximate $|A \cap B|$ computing the element-wise multiplication between the two segmentations and then summing the resulting matrix.
+	
+	\begin{equation}
+		\label{Eq: Dice}
+		DSC(A,B) = \frac{2 |A \cap B|}{|A| + |B|}
+	\end{equation}
+	
+		
+	
+	
+	
+	\textbf{Jaccard Index}
+	\\
+	\\
+	The Jaccard Index, also called Intersection over the Union (IoU), is essentially a method to quantify the percent overlap between two images. This metric is closely related to the Dice coefficient and similarly it ranges from 0 to 1. It is computed as the following:
+	
+	\begin{equation}
+	J(A, B) = \frac{|A \cap B|}{|A \cup B|}
+	\end{equation}
+
+	
+	
+	\textbf{Hausdorff Distance}
+	\\
+	\\
+ 	% Non ho trovato come calcolare quella media, quindi o lascio così come gliela avevo mandata, che è quella standard, però immagino che mi dica che nel paper c'è quella average e di mettere quella. Altrimenti faccio finta che quella modificata sia la average (cosa che probabilmente non è vera, in teoria penso sia semplicemente il minimo delle distanze invece del massimo). Una mi viene 10^1, l'altra mi viene 10^-2, i risultati dovrebbero essere 10^-1
+ 	The Hausdorff Distance is a metric for measuring the similarity between two sets of points and is often used to evaluate the quality of segmentation boundaries. Having two binary maps, A and B, it is defined as:
+ 	
+ 	\begin{equation}
+ 		d_H(A,B) := \max \left\{ \sup_{a \in A} d(a,B), \sup_{b \in B} d(A,b) \right\}
+ 	\end{equation}
+	
+
+ 	Taking into account the maximum distance, the standard Hausdorff distance considers the "worst-case scenario" and this makes it sensitive to outliers.
+ 	To avoid this, Average Hausdorff Distance was introduced, computed as following:
+	
+	\begin{equation}
+		AVG \, \, d_H(A,B) = \frac{1}{|A|} \sum_{a \in A} min_{b \in B} d(a,b) + \frac{1}{|B|} \sum_{b \in B} min_{a \in A} d(b,a)
+	\end{equation}
+	
+	with $|A|$ and $|B|$ representing the number of voxels in A and B, respectively.
+	In contrast to the	DSC, a smaller AVG HD indicates a better capture of the segmentation boundaries with a value of zero being the minimum (perfect match).
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\newpage
+	\subsubsection{Results}
+	Previously cited statistics were computed for the three volumes. In addition to these, also the volumetric difference was computed as the difference between the two volume total sums.
+	Results are shown in Tab. \ref{Tab: Statistics}.
+	
+	
+	\begin{table}[h]
+		\resizebox{1\textwidth}{!}
+		{\begin{tabular}{@{}lccccccccc@{}}
+				\cmidrule(l){2-10}
+				& \multicolumn{3}{c}{\textit{\textbf{1}}}                                  & \multicolumn{3}{c}{\textit{\textbf{2}}}                                  & \multicolumn{3}{c}{\textit{\textbf{3}}}             \\ \cmidrule(l){2-10} 
+				\multicolumn{1}{l|}{}                            & \textit{Case A} & \textit{Case B} & \multicolumn{1}{c|}{\textit{Case C}} & \textit{Case A} & \textit{Case B} & \multicolumn{1}{c|}{\textit{Case C}} & \textit{Case A} & \textit{Case B} & \textit{Case C} \\ \midrule
+				\multicolumn{1}{l|}{\textbf{Dice Similarity Coefficient}}                & 0.963           & 0.987           & \multicolumn{1}{c|}{0.958}           & 0.956           & 0.987           & \multicolumn{1}{c|}{0.955}           & 0.955           & 0.987           & 0.954           \\ \midrule
+				\multicolumn{1}{l|}{\textbf{Jaccard index}}      & 0.928           & 0.974           & \multicolumn{1}{c|}{0.919}           & 0.916           & 0.975           & \multicolumn{1}{c|}{0.914}           & 0.914           & 0.973           & 0.912           \\ \midrule
+				\multicolumn{1}{l|}{\textbf{Volumetric diff.}}   & -64988          & 8439            & \multicolumn{1}{c|}{73427}           & -97433          & -1582           & \multicolumn{1}{c|}{95851}           & -105436         & -1691           & 103745          \\ \midrule
+				\multicolumn{1}{l|}{\textbf{Hausdorff distance}} & 0.10           & 0.02            & \multicolumn{1}{c|}{0.12}           & 0.11           & 0.02            & \multicolumn{1}{c|}{0.12}           & 0.12           & 0.02            & 0.12            \\ \bottomrule
+		\end{tabular}}
+		\caption{Dice Similarity Coefficient, Jaccard Index, Volumetric difference and Hausdorff distance for each case for each different volume (1, 2, 3)}
+		\label{Tab: Statistics}
+	\end{table}
+
+	Considering the results for each single comparison, large similarity was found, having high Dice Similarity Coefficients and Jaccard indexes (all above 0.9) and low Hausdorff distances.
+	
+	Concerning the comparison between case A, B and C, in all three images the best statistics were reached in case B, comparing FastSurfer with FreeSurfer \textsl{aseg} volume. In particular this case has the largest Dice Similarity coefficient and Jaccard index as well as the lowest Hausdorff distance. The result given by the volumetric distance confirms these observations, as in case B is one/two order of magnitude lower than the other cases. In addition to this, volumetric distance was found to be always negative in case A and positive in case C. This induces the idea that FreeSurfer \textsl{aseg.auto} segments more regions compared to both FreeSurfer \textsl{aseg} and FastSurfer. This result will be found also in the following analysis.
+	
+	Comparing different images, in case B a Dice Similarity Coefficient equal to 0.987 was found in all of them. Also Jaccard index of the three volumes was pretty similar (0.974, 0.975, 0.973).
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\newpage
+	\subsection{Difference matrix}
+	Difference matrix can be computed making the difference pixel by pixel between two segmented volumes. This was performed in all three cases (A, B and C) for the three volumes available (volume 1, volume 2 and volume 3). In the following, results for the first volume will mainly be examinated, but they should be considered as representative also of the others, as conclusions found were generally comparable.
+	
+	\subsubsection{Slice by slice}
+	
+	Difference matrix can be analyzed slice by slice. In particular, the sum of differences per slice and the percentage of different pixels per slice were plotted.
+	These features could be visualized in the three common brain planes: axial, coronal and sagittal.
+
+	
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 1\textwidth] {Sum differences 2011 (axial).png}
+		\caption{Sum of the values of the difference matrix in each slice (axial view)}
+		\label{Fig: Sum_diff_axial}	
+	\end{figure}
+
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 1\textwidth] {Sum differences 2011 (coronal).png}
+		\caption{Sum of the values of the difference matrix in each slice (coronal view)}
+		\label{Fig: Sum_diff_coronal}	
+	\end{figure}
+
+	% Sum
+	First of all one could compute the sum of the difference matrix in each slice for each plane, to precisely localize the differences. Histograms in Fig. \ref{Fig: Sum_diff_axial}, \ref{Fig: Sum_diff_coronal}, \ref{Fig: Sum_diff_sagittal} show the results of this analysis for the axial, coronal and sagittal planes respectively.
+
+
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 1\textwidth] {Sum differences 2011 (sagittal).png}
+		\caption{Sum of the values of the difference matrix in each slice (sagittal view)}
+		\label{Fig: Sum_diff_sagittal}	
+	\end{figure}
+	
+	% confronto tra caso A, B e C
+	Generally speaking, among the different planes, the first conclusion one could derive from these graphs is that the differences in case B are clearly lower than the ones in case A and case C. Negative sign in case A and positive sign in case C confirm that FreeSurfer \textsl{aseg.auto} output segments more regions.
+	
+	For further analysis, one could look at the slices where there are larger values (i.e. peaks, where differences are localized) in order to visualize them.	
+	
+	One note should be made at this point. As previously said, the difference matrix is computed as a difference in each voxel. Original images have binary values, 0 or 1, therefore the difference matrix will have the following values: 0, $\pm 1$. Adding all the values on a certain slice, one could have that a lot of +1 and -1 cancel off. As a consequence, strong differences of opposite sign located in different regions of the same slice could appear as small peak in the sum of differences histogram. Strong peaks on the histograms are anyway valid, and represent very strong differences as they "survive" the sum.
+	
+	Lineplots of the percentage of different pixels per slice have been calculated to overcome this issue and have a more clear and reliable visualization of the differences.
+	This feature turns out to be really small, especially for case B, but anyway useful to localize the differences. 	
+	Results are shown in Fig. \ref{Fig: Line_plot_2011_ax}, \ref{Fig: Line_plot_2011_cor}, \ref{Fig: Line_plot_2011_sag} for the first volume (but generalizable also for the other two volumes). 
+	
+	From these pictures we can again appreciate as case B has the lowest difference among the comparisons, while case A and case C have a comparable behaviour across the slices.
+	%
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 0.75\textwidth] {pixel_diversi_ax_2011.png}
+		\caption{Plots of the percentage of different pixels per slice for the first patient (axial projection)}
+		\label{Fig: Line_plot_2011_ax}	
+	\end{figure}
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 0.75\textwidth] {pixel_diversi_cor_2011.png}
+		\caption{Plots of the percentage of different pixels per slice for the first patient (coronal projection)}
+		\label{Fig: Line_plot_2011_cor}	
+	\end{figure}
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 0.75\textwidth] {pixel_diversi_sag_2011.png}
+		\caption{Plots of the percentage of different pixels per slice for the first patient (sagittal projection)}
+		\label{Fig: Line_plot_2011_sag}	
+	\end{figure}
+	\newpage
+	\textbf{Case B}
+	\\
+	As we can easily deduce from histograms and line plots, case B is the one with lower differences. Indeed, most of them are visualized as single spots each one far from the others.
+	\\ We can further study this case distinguishing among the three different planes.
+	
+	\textit{Sagittal plane}
+	\\
+	A clear peak in both graphs can be found around slices 98 and 160, that is clearly localized in the lower part of the temporal lobe and a bit in the upper part of the cerebellum, as shown in Fig. \ref{Fig: Slices_98_160}. 
+
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_z_98_B_2011_prova.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_z_160_B_2011_prova.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Slices 98 and 160 on sagittal view. In both cases there are some differences localized in the upper part of the cerebellum and the lower part of the temporal lobe (red areas)}
+		\label{Fig: Slices_98_160}
+	\end{figure}
+
+
+	In addition to these slices, the line plot also shows a peak around slice 130 that the histogram doesn't show. The reason for this is that, even if there aren't clearly localized regions, a lot of diffused blue and red spots occur in the difference matrix: these spots cancel off in the histogram but are shown in the line plot. In the following, high peaks due to spots randomly spread in the slices will not be mentioned as they don't provide any meaningful information on the differences localization. 
+	
+	
+
+	
+	\textit{Axial plane}
+	\\
+	A clear peak appears around slices 137-141, that could be recognized in axial view in light differences in both the external part of the cerebellum and the lower part of the temporal lobe (in the right side in Fig. \ref{Fig: Slice_137}). 
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {slice_x_137_B_2011.png}
+		\caption{Difference matrix on slice 137 shows light differences in both areas of interest (axial view)}
+		\label{Fig: Slice_137}	
+	\end{figure}
+	\newpage
+	\textit{Coronal plane}
+	\\
+	In the coronal view, peaks around slices 117 show differences in the inferior part of temporal lobe (Fig. \ref{Fig: Slice_117}). This could not be cerebellum as the latter is present only in deeper slices (from slice 151 forward).
+	%
+	\begin{figure} [h!]
+		\centering
+		\includegraphics[width = 0.7\textwidth] {slice_y_117_B_2011.png}
+		\caption{Difference matrix on slice 117 shows differences in temporal lobe (coronal view)}
+		\label{Fig: Slice_117}	
+	\end{figure}
+	\\
+	\\
+	\textbf{Case A and Case C}
+	\\
+	As we have already seen, differences are widely spread in the whole volume in cases A and C. However, one can anyway try to analyse and localize the main differences, distinguishing among the three planes (axial, coronal and sagittal).
+	 
+	 
+	\textit{Sagittal plane} 
+	\\
+	Peaks at slices 107, 148 and 163 show that main differences are located in the inferior part of the temporal lobe and in the superior external part of the cortex, as shown in Fig. \ref{Fig: slices_148_casi}. Having that it is a negative difference in case A and positive in case C, that region is only segmented by FreeSurfer \textsl{aseg.auto}. From these images is also clear that cerebellum is segmented in the same way in case A, as it does not appear in the difference, while this happen in case C.
+	%
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_z_148_A_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_z_148_C_2011.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Difference matrix on slice 148 (sagittal view) shows differences in the temporal lobe and the external part of the cortex}
+		\label{Fig: slices_148_casi}
+	\end{figure}
+	\newpage
+	An interesting note should be made about slices 134-142, shown in Fig. \ref{Fig: slices_137_casi}. 	Differences in the back part of the brain, above the cerebellum, are present in both images. These differences are not subject-specific for the first volume, as similar-located difference regions can also be found in the two other brain volumes under study, as shown in Fig. \ref{Fig: slices_138_2012_casi} and Fig. \ref{Fig: slices_142_2013_casi}. This is clearly only a first evidence, that should be further verified on a larger number of samples.
+	%
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_z_137_A_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_z_137_C_2011.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Difference matrix on slice 137 in case A and C (sagittal view) shows differences in the posterior part of the brain, above the cerebellum, for the first volume}
+		\label{Fig: slices_137_casi}
+	\end{figure}
+%
+%
+	%
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_z_138_A_2012.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_z_138_C_2012.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Difference matrix on slice 138 (sagittal view) shows differences in the posterior part of the brain, above the cerebellum, also for the second volume}
+		\label{Fig: slices_138_2012_casi}
+	\end{figure}
+%
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_z_142_A_2013.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_z_142_C_2013.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Difference matrix on slice 142 (sagittal view) shows differences in the posterior part of the brain, above the cerebellum, also for the third patient}
+		\label{Fig: slices_142_2013_casi}
+	\end{figure}
+	\\
+	\\
+	\textit{Axial plane}
+	\\
+	A noteworthy difference is present at slice 141; this is again mainly localized in the inferior part of the temporal lobe, as shown in Fig. \ref{Fig: slices_141_casi}. Case C also shows some differences in the external part of the cerebellum (highlighted by a circle in the image).
+	%
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_x_141_A_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_x_141_C_2011.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Slice 141 in case A and C in axial view. In both cases there are some differences localized in the lower part of the temporal lobe. In case C light differences in the cerebellum have also been found}
+		\label{Fig: slices_141_casi}
+	\end{figure}
+	\\
+	\\
+	\textit{Coronal plane}
+	\\
+	Once again in both case A and case C peaks from 105 to 128 are localized in the inferior part of the temporal lobe, as shown in Fig. \ref{Fig: slices_121_casi}.
+
+
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.45\linewidth} 				\includegraphics[width=\linewidth]{slice_y_121_A_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{slice_y_121_C_2011.png}
+		\end{subfigure}
+		\begin{subfigure} [b] {0.08\linewidth} \includegraphics[width=\linewidth]{barra_colori_differenze.png}
+		\end{subfigure}
+		\caption{Slice 121 in case A and C in coronal view. Main differences are in both case localized in the lower part of the temporal lobe}
+		\label{Fig: slices_121_casi}
+	\end{figure}
+
+
+	% Se vuoi a 157 il picco in A e C è dovuto ad alcune differenze nella parte superiore.
+	% ma direi che sto bene senza, non è una differenza così grande
+
+
+	
+	
+	
+	\newpage
+	\subsubsection{On the entire volume}
+	%
+	Results obtained in the previous paragraph are supported also by the 3D visualization of the difference matrix brain volume .
+	\\
+	\\
+	\textbf{Case B}
+	\\
+	Brain volumes are shown in Fig. \ref{Fig: 3D 2011} (first volume), Fig. \ref{Fig: 3D 2012} (second volume) and Fig. \ref{Fig: 3D 2013} (third volume). 
+	In all three cases one could notice that the main differences are located in the upper part of the cerebellum and in the lower part of the temporal lobe, in agreement with what has been previously found.
+	\\
+	\\
+	\\
+	\\
+	\\
+	\begin{figure} [h]
+		\centering
+		\begin{subfigure} [b] {0.4\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.4\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_other_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{bottom_13_2011.png}
+		\end{subfigure}
+		\caption{Tridimensional plots of the difference matrix volume for the first patient. Red points are the ones only found by FreeSurfer. Blue points are the ones only found by FastSurfer}
+		\label{Fig: 3D 2011}
+	\end{figure}
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\\
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.33\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_2012.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.33\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_other_2012.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.37\linewidth} \includegraphics[width=\linewidth]{bottom_13_2012.png}
+		\end{subfigure}
+		\caption{Tridimensional plots of the difference matrix volume for the second patient. Red points are the ones only found by FreeSurfer. Blue points are the ones only found by FastSurfer}
+		\label{Fig: 3D 2012}
+	\end{figure}
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.33\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_2013.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.33\linewidth} \includegraphics[width=\linewidth]{sagittal_view_13_other_2013.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.37\linewidth} \includegraphics[width=\linewidth]{bottom_13_2013.png}
+		\end{subfigure}
+		\caption{Tridimensional plots of the difference matrix volume for the third patient. Red points are the ones only found by FreeSurfer. Blue points are the ones only found by FastSurfer}
+		\label{Fig: 3D 2013}
+	\end{figure}	
+	\\
+	\\
+	\begin{figure} [h!]
+		\centering
+		\begin{subfigure} [b] {0.4\linewidth} \includegraphics[width=\linewidth]{sagittal_view_23_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.4\linewidth} \includegraphics[width=\linewidth]{sagittal_view_23_other_2011.png}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure} [b] {0.45\linewidth} \includegraphics[width=\linewidth]{bottom_23_2011.png}
+		\end{subfigure}
+		\caption{Difference volume for case C, as an example  of widespread differences}
+		\label{Fig: 3D_caseC_2011}
+	\end{figure} 
+	\textbf{Case A and case C}
+	\\
+	Concerning case A and case C, 3D visualization is more chaotic, as there are more differences and they are not localized but spread all over the volume (especially in the external regions of the cortex). This supports the conclusions previously made.
+	As an example, case C volume difference for the first volume is reported in Fig. \ref{Fig: 3D_caseC_2011}.
+	Also in this type of comparison one could notice as FreeSurfer \textsl{aseg.auto} identify more points than the other two (marked as red points in case C in Fig. \ref{Fig: 3D_caseC_2011}).
+		
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+	\newpage
+	\section{Conclusions}
+	
+	This work aimed to perform a comparison between segmentation outputs given by FreeSurfer and FastSurfer, two pipelines commonly used in preprocessing steps of many machine learning algorithms in neuroscience. The main purpose of this comparison was verifying the similarity between outputs and identifying potential recursive differences.
+
+	% Sono simili -> ok utilizzo di FastSurfer 
+	Dice Similarity Index, Jaccard Index, Volumetric Difference and Hausdorff Distance were computed for the three volumes in each case (A, B, C). All comparisons turned out to have good similarity (DSC and Jaccard Index above 0.9, Hausdorff distance equal or lower than 0.1). FreeSurfer \textsl{aseg} output and FastSurfer output (named case B in comparisons) proved to have the greatest similarity (Dice Similarity Coefficient $= 0.987$, Jaccard Index $\simeq 0.974$, Hausdorff Distance $= 0.02$ ). Small differences were found in general also computing the percentage of different pixel per slice in each image (larger differences were found to be of the order of 2$\%$, lower than $1\%$ in case B). These result are in agreement with what can be found in literature \cite{Henschel_FastSurfer}, \cite{Bloch_FastSurfer} that suggest FastSurfer pipeline as a comparable (but faster) and valid alternative to FreeSurfer. 
+	
+	%Localizzazione delle differenze
+	Difference matrix was then computed for all volumes in all three cases. Bidimensional and tridimensional visualizations of these matrices were used to easily identify where main differences could be located. 
+	Plots of the percentage of different pixel per slice, together with histograms of the sum of differences, were used to further determine slices where those differences were located. In particular, main peaks in the lineplots were studied. Case B was the easiest case to deal with as differences were less and more spread among the whole volume compared to cases A and C (as previously found from statistics). Indeed, most differences were single and scattered spots. Among these, noteworthy aggregated groups of points were found in the lower part of the temporal lobe and in the upper part of the cerebellum in all three planes (axial, coronal and sagittal). Following on from what has been previously said, differences in cases A and C were widely spread in the whole volume. Noticeable larger different regions were found to be located in the external part of the cortex (especially in the back side of the brain, above the cerebellum) and again in the lower part of the temporal lobe (but in a larger area compared to case B). Greater differences were due to the fact that in all the three volumes FreeSurfer \textsl{aseg.auto} output segmented more regions compared to both FreeSurfer \textsl{aseg} and FastSurfer output. 
+	\\
+	To conclude, some potentially systematic differences were identified but further studies on a larger sample are needed in order to characterize them as recurring differences in pipelines segmentation ability. 
+	% C'è sempre un po' il dubbio che aseg.auto sia uno step prima di togliere cose manualmente, quindi non insisterei troppo. Se fosse così comunque è un altro vantaggio di FastSurfer, che fa le cose automaticamente
+	
+
+	Results from both statistics and difference matrix analysis have thus shown that FastSurfer and FreeSurfer give comparable results. This suggest to use FastSurfer as a substitute to FreeSurfer, due to its incomparable higher speed. Increasing computational speed is indeed the main goal. We can take brain age estimation as an example. Studies shown in Section \ref{Introduction} described the brain predicted age difference (Brain PAD) as a novel MRI based biomarker, that aggregates the complex, multidimensional ageing pattern across the whole brain into one single value. Preprocessing of brain volumes was the first stage for estimating it. Thus, having a shorter computational time allows to reduce the entire pipeline performance time and to do a first step in the direction to make this technique clinically usable.
+	The ultimate goal will indeed be the usage of MRI as a screening tool to help identifying people at greater risk of general functional decline and mortality during ageing. 
+	
+	
+
+
+
+
+	
+	
+	
+	
+	
+	
+	\newpage
+	%
+	\bibliographystyle{unsrt}
+	\bibliography{Bibliografia.bib}
+	\addcontentsline{toc}{chapter}{Bibliografia}
+	% \chaptermark{Bibliografia}
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+% Potrei inventarmi una soglia in base a cui ho scelto i picchi: ho analizzato i picchi di differenza nelle slices in cui superavano l'1$\%$. Non mi vincolerei così tanto, anche perchè superiori all'1% sono tanti
+
+
+
+
+% Lineplot per 2012 e 2013, per ora direi di non metterli (occupano una pagina l'uno).
+%2012
+%	\begin{figure} [h!]
+%		\centering
+%		\begin{subfigure} [b] {0.87\linewidth} 				\includegraphics[width=\linewidth]{pixel_diversi_ax_2012.png}
+%		\end{subfigure}
+%		\hfill
+%		\begin{subfigure} [b] {0.87\linewidth} \includegraphics[width=\linewidth]{pixel_diversi_sag_2012.png}
+%		\end{subfigure}
+%		\hfill
+%		\begin{subfigure} [b] {0.87\linewidth} \includegraphics[width=\linewidth]{pixel_diversi_cor_2012.png}
+%		\end{subfigure}
+%		\caption{Plots of the percentage of different pixels per slice for the second patient}
+%		\label{Fig: Line plot 2012}
+%	\end{figure}
+
+
+%2013	
+%	\begin{figure} [h!]
+%		\centering
+%		\begin{subfigure} [b] {0.87\linewidth} 				\includegraphics[width=\linewidth]{pixel_diversi_ax_2013.png}
+%		\end{subfigure}
+%		\hfill
+%		\begin{subfigure} [b] {0.87\linewidth} \includegraphics[width=\linewidth]{pixel_diversi_sag_2013.png}
+%		\end{subfigure}
+%		\hfill
+%		\begin{subfigure} [b] {0.87\linewidth} \includegraphics[width=\linewidth]{pixel_diversi_cor_2013.png}
+%		\end{subfigure}
+%		\caption{Plots of the percentage of different pixels per slice for the third patient}
+%		\label{Fig: Line plot 2013}
+%	\end{figure}
+
+
+
+
+
+
+
+%Ho trovato questa frase su \cite{Bellantuono2021} ma secondo me sarà utile anche per me.
+%Age shapes brain networks by modifying the spatial distribution of white matter, gray matter and CSF and, therefore, the way brain regions are connected i.e. their pairwise similarity.
+
+
+
+
+
+
+
+%Per capirci tra gli articoli:
+%\begin{itemize}
+%   \item \cite{Cole2017d} LETTO Articolo in cui distingue tra età cronologica ed età biologica, che può essere studiata con le neural networks. La differenza può essere utilizzata per prevedere l'insorgere di malattie
+%  \item \cite{Coleal2016} LETTO due pagine in cui dice che è importante predire l'età delle persone individualmente e che questo può essere fatto con ottimi risultati statistici considerando il volume del cervello
+% \item \cite{Cole2018} \textcolor{green}{Lothian Birth Cohort 1936} LETTO Importanza di trovare l'età biologica, che effettivamente predice la mortalità. Tra i tanti biomarker, la brain age. Illustra il famoso disegno dei vari step. Le immagini vengono convertite in una similarity matrix. Con la \textbf{Gaussian Process Regression} hanno cercato da questi dati di predire l'età. Accuracy trovata nella cross validation. Coefficienti poi usati sui test data. MAE, R e R$^2$ per trovare che chi aveva un cervello che appariva più vecchio è morto prima. Ogni anno in più stimato è un aumento del $6\%$ della probabilità di morire
+%\item \cite{Franke2012} \textcolor{green}{Database ADNI E OASIS} LETTO Introduzione sul perchè trovare la brain age, in particolare per trovare preventivamente MCI e Alzheimer dalla differenza tra età stimata ed età cronologica. Usano la \textbf{Relevance Vector Regression} (RVR), un'alternativa bayesiana al \textbf{support vector machines (SVM)}. Fanno un'analisi statistica con la intra class correlation coefficient (ICC coefficient), student t test e ANOVA, confrontando i risultati anche con test cognitivi. Fanno uno studio longitudinale e individuano controlli, sMCI, pMCI e AD prima e dopo.
+%   \item \cite{Franke2010}  \textcolor{green}{Database ADNI}. LETTO Nell'intro ti dice specificatamente cosa succede nell'invecchiamento normale alla GM, WM e CSF e che con alcune malattie neurodegenerative si hanno dei percorsi diversi. Usano la \textbf{Relevance Vector Machine} e cercano di confrontarla con la \textbf{SVM}. E' un articolo vecchio quindi non ci perderei troppo tempo. R e MAE 
+%  \item \cite{Cole2017a} \textcolor{green}{Database BAHC} LETTO Utilizza \textbf{CNN} e confronto con \textbf{Gaussian Process Regression}, in entrambi i casi sperimentati su raw data per diminuire i tempi. Studio ereditabilità brain age per dare un riferimento esterno. Test-retest in diversi scanner e nello stesso scanner a distanza di tempo. Pearson, MAE, RMSE, $R^2$, ICC
+% \item \cite{Cole2017b} \textcolor{green}{No database, hanno fatto loro} LETTO Studio della brain age su pazienti su sindrome di Down con \textbf{Gaussian Process Regression}. Pearson, MAE, RMSE, $R^2$
+%\item \cite{Lombardi2021} \textcolor{green}{IXI e UK Biobank} LETTO Articolo della competizione per trovare il minor MAE e il minor MAE tenendo lo Spearman coefficient $< 0.1$. Praticamente fa già il confronto tra i metodi con tanto di grafici carini quindi prendi da qui. Il loro metodo è  feed forward \textbf{DNN} su raw data e fa \textbf{confronto con altri 3 (RVR, RF e Lasso)}. Usano MAE e Pearson. Dà un range generico di R e MAE da diversi studi. Fanno anche una valutazione del ranking delle features tra i diversi approcci e nel loro approccio indicano quelle più indicative.  
+% \item \cite{Cole2017c} \textcolor{green}{Loro database}  OK Tratta HIV. Usa \textbf{Gaussian Process Regression}. Praticamente l'ho letto, ma giusto se voglio mettere dei valori di MAE, R come applicazione sull'HIV.
+%\item \cite{Cole2020} \textcolor{green}{UK biobank} OK utilizza la \textbf{LASSO regression} e da MAE, R e $R^2$. . Non penso sia importante leggerlo
+%\item \cite{Amoroso2019} \textcolor{green}{ADNI, ABIDE, ICBM, IXI E Bejing Normal University} LETTO Tratta \textbf{DNN} e spiega molto molto bene i networks. Come nodal metric usa la strenght (importanza di un nodo) e inverse partecipation (come questa importanza è distribuita attorno al nodo). Lo confrontano con \textbf{Lasso}, \textbf{Ridge}, \textbf{Support Vector Regression} e \textbf{Random Forest Regression} e anche qui descrive questi metodi molto molto bene. MAE, RMSE e Correlation coefficient che critica un po' per confrontare. Fa anche un po' di feature importance e mette in relazione con zone anatomiche. Heteroscedasticity
+%  \item \cite{Bellantuono2021} \textcolor{green}{ABIDE e Beijing} LETTO  Approccio di complex networks (teoria dei grafi) ma più semplice di quello multiplex. Comunque è \textbf{Deep Neural Network}. L'importanza di ogni nodo viene caratterizzata da centrality measuraments, che considerano il numero di connessioni di ciascun nodo e la loro qualità. Ti dice bene come si costruisce il network (modeling) e come da questo network fare il learning che permette di predire la brain age. Considera in particolare la nodal strenght. Viene utilizzato un deep neural network a 4 hidden layer. MAE, RMSE, e coefficiente di correlazione di Pearson. Confronto con \textbf{Random Forest}, \textbf{Lasso Regression},  \textbf{Ridge Regression}, \textbf{Support Vector Machine}, \textbf{Relevance Vector Machine}, \textbf{Elastic Net}. Obv DNN il migliore, confronto sul training, sul test e su un database con range di età più ristretto. Studiano dipendenza da sample size, age, diversi siti di acquisizione. Importanza delle features con Gedeon Method. Cita la competizione e molti degli articoli che ho precedentemente letto
+
+
+%\end{itemize}
