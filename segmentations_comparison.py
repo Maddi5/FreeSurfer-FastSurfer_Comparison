@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+"""
+
+Script to load MRI images from .mgz files, compute the metrics for the comparison and analyze the difference matrix.
+
+Author: Maddalena Cavallo
+Date: May 2024
+
+"""
+
+
 import numpy as np
 import nibabel as nib
 import pandas as pd
@@ -115,7 +125,7 @@ def get_largest_CC(binary_volume):
     if conn_components.max() == 0:
         raise ValueError("No connected components found in the input image")
     
-    #get the largest component, exluding the background label
+    #get the largest component, excluding the background label
     largest_label = np.argmax(np.bincount(conn_components.flat)[1:]) + 1
     largest_conn_component = (conn_components == largest_label)
 
@@ -126,7 +136,7 @@ def get_largest_CC(binary_volume):
 
 
 
-# Loading volumes
+# Load volumes
 print("\nLoading volumes...\n")
 
 input_volumes= {
@@ -135,7 +145,7 @@ input_volumes= {
     'FastSurfer': load_volume('Simulated_Data/Simulated_FastSurfer.mgz')
 }
 
-
+# Convert to int type to be able perform the subtraction for the difference matrix
 data = {
     'FreeSurfer': get_largest_CC(input_volumes['FreeSurfer']).astype(int),
     'FreeSurfer_auto': get_largest_CC(input_volumes['FreeSurfer_auto']).astype(int),
