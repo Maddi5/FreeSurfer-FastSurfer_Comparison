@@ -1,3 +1,12 @@
+"""
+
+Script to generate visualizations of the differences between segmentation volumes.
+
+Author: Maddalena Cavallo
+Date: May 2024
+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -20,6 +29,8 @@ def create_bar_plot(data, view):
         plt.ylabel('Total sum of differences')
         plt.title(f'{cases[i][0]} vs {cases[i][1]}')
 
+        #get axis limits from the data
+        
         non_zero_indices = dataframe[dataframe['Total sum'] != 0].index
         x_min = round(dataframe.loc[non_zero_indices[0], 'Slice'], -1)
         x_max = round(dataframe.loc[non_zero_indices[-1], 'Slice'], -1)
@@ -55,6 +66,8 @@ def create_line_plot(data, view):
 
     plt.xlabel('Slice')
     plt.ylabel('% of different pixels')
+
+    #get axis limits from the data
 
     non_zero_indices = dataframe[dataframe['Percentage difference'] != 0].index
     x_min = round(dataframe.loc[non_zero_indices[0], 'Slice'], -1)
@@ -194,11 +207,11 @@ for case in cases:
 #Ask the user which slices to visualise
 while True:
     try:
-        print("\nSelect which slices you want to visualise")
+        print("\nSelect which slices you want to visualise. \nWrite e.g. (0, 0, 1) if you don't want to visualise any slice")
 
         first = int(input("Enter the start of the slice range (>=0): "))
         last = int(input("Enter the end of the slice range (<256): "))
-        step = int(input("Enter the step for the slice range (>0): "))
+        step = int(input("Enter the step for the slice range (>0, recommended >15 at least): "))
 
         break
 
@@ -209,7 +222,10 @@ while True:
 #set the slices to see
 slice_index = list(range(first, last, step))
 
+#Redefine the case names to have shorter output names
+#A: FreeSurfer vs FastSurfer, B: FreeSurfer vs FreeSurfer_auto, C: FreeSurfer_auto vs FastSurfer
 case_names = ['A', 'B', 'C']
+
 projection_names = ['Axial', 'Coronal', 'Sagittal']
 
 
@@ -220,11 +236,14 @@ for i, diff_matrix in enumerate(difference_matrices):
 
     # For each projection
     for k, projection in enumerate(projection_names):
+
         print(f"{projection} view")
         
         # For each slice
         for j in slice_index:
+
             print(f"Slice {j}")
+
             #Select the correct projection
             if projection == 'Axial':
                 slice_data = diff_matrix[j, :, :]

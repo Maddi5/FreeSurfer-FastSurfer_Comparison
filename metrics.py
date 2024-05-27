@@ -1,4 +1,11 @@
-#Script with functions to compute the metrics
+"""
+
+Script with the functions to compute the similarity metrics
+
+Author: Maddalena Cavallo
+Date: May 2024
+
+"""
 
 import numpy as np 
 from skimage import metrics
