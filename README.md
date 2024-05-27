@@ -13,9 +13,47 @@ The main directory includes:
 - `setup.py`: script to check for and install the necessary packages for running all other scripts
 - `test_pytest.py`: script containing all test functions
 
+
 The [Simulated_Data](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Simulated_Data) folder includes the `simulate_volumes.py` script used to simulate the brain volume segmentations, starting from real MRI data. This was done to protect sensitive data while providing the user useful volumes to run the main code on. `Simulated_FreeSurfer.mgz`, `Simulated_FreeSurfer_auto.mgz`, `Simulated_FastSurfer.mgz` are example outputs from this code, ready to be used in the `segmentations_comparison.py` script.
+
 
 The [Test_volumes](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Test_volumes) folder includes the `Create_test_volumes.py` script used to create test volumes for test functions in the `test_pytest.py` script. `empty_volume.mgz` and `test_input_volume.mgz` are outputs of this script, ready to be used in testing.
 
+
 The [Results](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Results) folder contains examples for all the outputs from the scripts. This includes an Excel file with metrics results `results_metrics.xlsx`, difference matrices for each case (`difference_matrix_case0_vs_case1.npy`), bar plots of the total sum of differences in each view (`Total_sum_differences_view.png`), line plots with % difference (`% Different_pixel_view.png`), 2D difference matrices for each plane in each comparison (`Differences_case0_vs_case1_view.xlsx`), 3D difference matrix in each view (`Differences_matrix_3D_FreeSurfer_vs_FastSurfer_view.png`).
 After running the `segmentations_comparison.py` and `plot_differences.py` scripts, the user will find all outputs saved in this folder.
+
+
+
+## Installation and Dependencies
+
+To clone the git repository, type the following commands in the terminal:
+```
+git clone https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison.git
+cd FreeSurfer-FastSurfer_Comparison
+```
+
+### Dependencies
+
+In order to run the code, the user needs to have the following packages installed:
+
+* numpy
+* nibabel
+* pandas
+* scipy
+* scikit-image
+* matplotlib
+* seaborn
+* medpy
+
+These dependencies are automatically installed when running the main code (`segmentatons_comparison.py`) through the call to the Setup_Script() function in the first lines.
+
+
+
+## Running tests
+
+The `test_pytest.py` script contains the tests for all the functions. In order to run them, one has to install the pytest package, and then run the `pytest` command (being in the FreeSurfer-FastSurfer_Comparison directory):
+```
+pytest
+```
+The scripts were written in `Python 3.12.2` on `Windows 10`, and the functions were tested in the same environment.
