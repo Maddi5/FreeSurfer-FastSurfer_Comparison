@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+"""
+
+Script containing the tests for all the functions
+
+Author: Maddalena Cavallo
+Date: May 2024
+
+"""
+
+
 import numpy as np
 import pytest
 from math import isclose, pi
