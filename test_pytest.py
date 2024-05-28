@@ -447,7 +447,7 @@ def test_volumetric_difference_output():
 
     assert volumetric_difference(seg2, seg2) == 0, "Expected Volumetric Difference to be 0 for identical segmentations"
 
-    assert volumetric_difference(seg1, seg3) == -1
+    assert volumetric_difference(seg1, seg3) == -1, "Expected Volumetric Difference to be -1"
 
 
 
