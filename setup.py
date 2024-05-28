@@ -28,7 +28,7 @@ def Setup_Script():
     try:
         import skimage
     except:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'skimage'])
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'scikit-image'])
     try:
         import medpy
     except:
