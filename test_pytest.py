@@ -126,7 +126,7 @@ def test_get_largest_CC_type_shape():
 
 
 
-def test_get_largest_CC_check_output():
+def test_get_largest_CC_check_largest():
 
     """
     Test that get_largest_CC() correctly identifies the largest connected component.
@@ -209,7 +209,7 @@ def test_get_largest_CC_not_binary():
 def test_get_largest_CC_no_connected_components():
 
     """  
-    Test that get_largest_CC() raises a ValueError with an input image wiht no connected components.
+    Test that get_largest_CC() raises a ValueError with an input image with no connected components.
 
     GIVEN: A binary volume with no connected components.
     WHEN: The get_largest_CC function is called with this volume.
@@ -400,7 +400,7 @@ def test_jaccard_not_binary():
     try:
         jaccard_index(seg1, seg2)
     except ValueError as e:
-        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are different that 0 or 1"
+        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are different than 0 or 1"
 
 
     try:
@@ -416,10 +416,11 @@ def test_jaccard_not_binary():
 
 
 #VOLUMETRIC DIFFERENCE
+
 def test_volumetric_difference_output():
 
     """
-    Test the volumetric_difference function with three simple cases.
+    Test the volumetric_difference function with three simple cases (equal volumes, identical input, one pixel difference)
 
     GIVEN: The binary volumes for comparison.
     WHEN: The volumetric_difference function is called with these volumes.
@@ -587,6 +588,7 @@ def test_Hausdorff_2D():
     THEN: The function returns the correct Hausdorff distance.
 
     """
+
     seg1 = np.array([[1, 1], [0, 0]])
     seg2 = np.array([[1, 0], [0, 1]])
 
