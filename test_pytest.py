@@ -11,7 +11,6 @@ Date: May 2024
 
 
 import numpy as np
-import pytest
 from math import isclose, pi
 
 from segmentations_comparison import load_volume, get_largest_CC
