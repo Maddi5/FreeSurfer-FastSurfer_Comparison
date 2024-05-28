@@ -9,6 +9,11 @@ Date: May 2024
 
 """
 
+from setup import Setup_Script
+
+Setup_Script()
+
+
 
 import numpy as np
 import nibabel as nib
@@ -18,12 +23,10 @@ from scipy.ndimage import label as connected_components
 from medpy.metric.binary import dc
 
 
-from setup import Setup_Script
 from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 
 
 
-Setup_Script()
 
 
 
