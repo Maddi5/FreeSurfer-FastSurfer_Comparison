@@ -23,7 +23,7 @@ The [Test_volumes](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tr
 The [Results](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Results) folder contains examples for all the outputs from the scripts. This includes an Excel file with metrics results `results_metrics.xlsx`, difference matrices for each case (`difference_matrix_case0_vs_case1.npy`), bar plots of the total sum of differences in each view (`Total_sum_differences_view.png`), line plots with % difference (`% Different_pixel_view.png`), 2D difference matrices for each plane in each comparison (`Differences_case0_vs_case1_view.xlsx`), 3D difference matrix in each view (`Differences_matrix_3D_FreeSurfer_vs_FastSurfer_view.png`).
 After running the `segmentations_comparison.py` and `plot_differences.py` scripts, the user will find all outputs saved in this folder.
 
-The [Report](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Report) folder contains the report of a real-case analysis on FreeSurfer and FastSurfer segmentations from three patients.
+The [Report](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/main/Report) folder contains the report of a real-case analysis on FreeSurfer and FastSurfer segmentations from three patients, written for the "Pattern Recognition" exam at the University of Bologna.
 
 
 ## Installation and Dependencies
