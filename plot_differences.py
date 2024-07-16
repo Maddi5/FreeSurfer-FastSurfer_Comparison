@@ -17,6 +17,31 @@ import pandas as pd
 
 def create_bar_plot(data, view):
 
+    """
+    This function creates bar plots that show the total sum of differences across the slices.
+
+    Parameters
+    ----------
+    data : list of pandas DataFrames
+        A list of dataframes where each dataframe contains the data for one case of comparison
+        Each DataFrame must have at least the columns 'Slice' and 'Total sum'
+    view : str
+        The view of the data shown in the plot (e.g. 'Axial', 'Sagittal', 'Coronal')
+
+    Returns
+    -------
+    None
+        The function saves the plot as a PNG file and displays it
+        The plot is saved to the 'Results' folder, specifying the view in the name
+
+
+    Notes
+    -----
+    The x-axis and y-axis limits of the plot are dynamically set based on the data
+
+    """
+
+
     fig = plt.figure(figsize=(10,7))
 
     for i, dataframe in enumerate(data):
