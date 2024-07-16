@@ -55,7 +55,7 @@ def create_bar_plot(data, view):
         plt.title(f'{cases[i][0]} vs {cases[i][1]}')
 
         #get axis limits from the data
-        
+
         non_zero_indices = dataframe[dataframe['Total sum'] != 0].index
         x_min = round(dataframe.loc[non_zero_indices[0], 'Slice'], -1)
         x_max = round(dataframe.loc[non_zero_indices[-1], 'Slice'], -1)
@@ -82,6 +82,30 @@ def create_bar_plot(data, view):
 
 
 def create_line_plot(data, view):
+
+    """
+    This function creates line plots that show the percentage difference of pixels across the slices
+
+    Parameters
+    ----------
+    data : list of pandas DataFrames
+        A list of dataframes where each dataframe contains the data for one case of comparison
+        Each dataframe must have at least the columns 'Slice' and 'Percentage difference'
+    view : str
+        The view of the data shown in the plot (e.g. 'Axial', 'Sagittal', 'Coronal')
+
+
+    Returns
+    -------
+    None
+        The function saves the plot as a PNG file and displays it
+        The plot is saved to the 'Results' folder, specifying the view in the name
+
+    Notes
+    -----
+    The x-axis limits are dynamically set based on data.
+
+    """
 
     plt.figure(figsize=(10, 7))
 
