@@ -6,6 +6,29 @@ import numpy as np
 
 def simulate_volumes(real_vol_path, output_file):
 
+    """
+    Simulate new volume data by assigning random labels to the non-background regions of a real volume
+
+    Parameters
+    ----------
+    real_vol_path : str
+        Path to the input volume file in .mgz format
+    output_file : str
+        Path to save the simulated volume file in .mgz format
+
+    Returns
+    -------
+    None
+        The function saves the simulated volume as a new .mgz file
+
+    Notes
+    -----
+    The function assigns random integer values between 1 and 10 to the non-background regions of the input volume.
+    Background regions (where voxel value is 0) are not modified.
+
+    """
+
+
     # Load the real volume
     real_vol = nib.load(real_vol_path).get_fdata()
 
