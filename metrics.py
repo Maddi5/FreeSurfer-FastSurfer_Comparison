@@ -60,10 +60,13 @@ def jaccard_index(seg1, seg2):
     if seg1.shape != seg2.shape:
         raise ValueError("Input volumes are of different shape")
 
-    if np.sum(seg1) == 0 and np.sum(seg2) == 0:
+    sum_seg1 = np.sum(seg1)
+    sum_seg2 = np.sum(seg2)
+
+    if sum_seg1 == 0 and sum_seg2 == 0:
         raise ValueError("Both of the segmentations are empty. Jaccard Index cannot be computed")
         
-    if np.sum(seg1) == 0 or np.sum(seg2) == 0:
+    if sum_seg1 == 0 or sum_seg2 == 0:
         raise ValueError("One of the segmentations is empty. Jaccard Index cannot be computed")
         
     if not np.all(np.isin(seg1, [0, 1])) or not np.all(np.isin(seg2, [0,1])):
@@ -72,7 +75,7 @@ def jaccard_index(seg1, seg2):
 
     intersection = np.sum(seg1 * seg2)
 
-    union = np.sum(seg1) + np.sum(seg2) - intersection
+    union = sum_seg1 + sum_seg2 - intersection
 
     #Jaccard Index is computed as intersection over union of the two sets
     jacc_index = intersection / union
@@ -194,10 +197,13 @@ def Hausdorff_distance(seg1,seg2):
     seg1 = np.asarray(seg1, dtype=bool)
     seg2 = np.asarray(seg2, dtype=bool)
 
-    if np.sum(seg1) == 0 and np.sum(seg2) == 0:
+    sum_seg1 = np.sum(seg1)
+    sum_seg2 = np.sum(seg2)
+
+    if sum_seg1 == 0 and sum_seg2 == 0:
         raise ValueError("Both of the segmentations are empty. Hausdorff distance cannot be computed")
 
-    if np.sum(seg1) == 0 or np.sum(seg2) == 0:
+    if sum_seg1 == 0 or sum_seg2 == 0:
         raise ValueError("One of the segmentations is empty. Hausdorff distance cannot be computed")
     
 
