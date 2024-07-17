@@ -146,6 +146,34 @@ def create_line_plot(data, view):
 
 def create_3d_plot(difference_matrix, view_angle, output_filename, dpi):
 
+
+    """
+    This function creates a 3D scatter plot to visualize the difference matrix across the brain
+
+    Parameters
+    ----------
+    difference_matrix : numpy.ndarray
+        A 3D numpy array where the value -1 represents FastSurfer only segmentation and the value 1 represents FreeSurfer only segmentation
+    view_angle : tuple of int
+        A tuple specifying the elevation and azimuthal angles (in degrees) for the view of the 3D plot
+    output_filename : str
+        The filename for saving the output plot
+    dpi : int
+        The resolution of the output plot in dots per inch
+
+    Returns
+    -------
+    None
+        The function saves the 3D plot as a PNG file and displays it
+
+    Notes
+    -----
+    The plot shows negative points (FastSurfer) in blue and positive points (FreeSurfer) in red
+    
+    """
+
+
+
     fig = plt.figure(figsize=(8, 6))
 
     ax = fig.add_subplot(projection='3d')
