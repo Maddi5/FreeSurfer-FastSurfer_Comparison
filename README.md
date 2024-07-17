@@ -59,7 +59,6 @@ The main directory includes:
 - `segmentations_comparison.py`: Script to load segmentation volumes, extract the largest connected component, compute comparison metrics and difference matrix.
 - `metrics.py`: Script containing functions to compute various metrics between two binary volumes.
 - `plot_differences.py`: Script to generate visualizations (bar plots, line plots, 2D plots, 3D plots) of the differences between segmentation volumes.
-- `setup.py`: script to check for and install the necessary packages for running all other scripts
 - `test_pytest.py`: script containing all test functions
 
 

@@ -9,11 +9,6 @@ Date: May 2024
 
 """
 
-from setup import Setup_Script
-
-Setup_Script()
-
-
 
 import numpy as np
 import nibabel as nib
