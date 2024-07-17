@@ -9,22 +9,22 @@ To clone the git repository, type the following commands in the terminal:
 ```
 git clone https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison.git
 cd FreeSurfer-FastSurfer_Comparison
+python3 -m pip install -r requirements.txt
 ```
+The last command installs also the requirements, that can also be installed before cloning the repository. The requirements are here reported:
+```
+numpy==1.26.4
+nibabel==5.2.0
+pandas==2.2.1
+scipy==1.12.0
+scikit-image==0.23.2
+matplotlib==3.8.3
+seaborn==0.13.2
+medpy==0.5.1
+pytest==8.0.2
+```
+The code was written and tested with these versions of the packages.
 
-### Dependencies
-
-In order to run the code, the user needs to have the following packages installed:
-
-* numpy
-* nibabel
-* pandas
-* scipy
-* scikit-image
-* matplotlib
-* seaborn
-* medpy
-
-These dependencies are automatically installed when running the main code (`segmentations_comparison.py`) through the call to the Setup_Script() function in the first lines.
 
 
 ## Usage
