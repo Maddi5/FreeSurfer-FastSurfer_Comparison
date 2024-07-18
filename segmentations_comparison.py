@@ -36,13 +36,8 @@ data = {
 }
 
 
-
-
 #Define cases of comparison
 cases = [('FreeSurfer', 'FreeSurfer_auto'), ('FreeSurfer', 'FastSurfer'), ('FreeSurfer_auto', 'FastSurfer')]
-
-
-
 
 
 print("\nComputing the metrics for each case of comparison...")
@@ -71,12 +66,6 @@ dataframe_metrics.to_excel('Results/results_metrics.xlsx', index=False)
 
 
 
-
-
-
-
-
-
 # Difference matrix
 print()
 print("\nComputing difference matrix...\n")
@@ -92,7 +81,6 @@ for case in cases:
     np.save(f'Results/difference_matrix_{case[0]}_vs_{case[1]}.npy', difference_matrix)
 
 
-
     #on the entire volume
 
     #Compute mean, standard deviation, total sum
@@ -105,8 +93,6 @@ for case in cases:
     print(f"Standard Deviation: {standard_deviation}")
     print(f"Total Sum: {total_sum}")
     print()
-
-
 
 
     #slice by slice
@@ -131,10 +117,8 @@ for case in cases:
                 slice = difference_matrix[:, :, i]
 
 
-
             # Sum of the difference matrix in that slice
             slice_sum = np.sum(slice)
-
 
             #Apply the absolute value to compute the total number of different pixels in that slice
             slice_num_diff = np.sum(np.abs(slice))
