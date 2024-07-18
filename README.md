@@ -58,6 +58,7 @@ The scripts were written in `Python 3.12.2` on `Windows 10`, and the functions w
 The main directory includes:
 
 - `segmentations_comparison.py`: Script to load segmentation volumes, extract the largest connected component, compute comparison metrics and difference matrix.
+- `load_functions.py` : Script containing functions to load the volumes and to extract the largest connected component.
 - `metrics.py`: Script containing functions to compute various metrics between two binary volumes.
 - `plot_differences.py`: Script to generate visualizations (bar plots, line plots, 2D plots, 3D plots) of the differences between segmentation volumes.
 - `test_pytest.py`: script containing all test functions
@@ -79,6 +80,10 @@ The [Report](https://github.com/Maddi5/FreeSurfer-FastSurfer_Comparison/tree/mai
 
 
 ## Scripts Overview
+
+### load_functions.py
+This script contains functions to load the volumes from .mgz files, perform some preprocessing on them and extract the largest connected component from a binary image.
+
 
 ### metrics.py
 
