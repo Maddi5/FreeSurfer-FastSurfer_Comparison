@@ -21,6 +21,7 @@ scikit-image==0.23.2
 matplotlib==3.8.3
 seaborn==0.13.2
 medpy==0.5.1
+argparse==1.4.0
 pytest==8.0.2
 ```
 The code was written and tested with these versions of the packages.
@@ -119,5 +120,5 @@ Run the script:
 
 ```
 bash
-python plot_differences.py
+python plot_differences.py --first FIRST --last LAST --step STEP
 ```

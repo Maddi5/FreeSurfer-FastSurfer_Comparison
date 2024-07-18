@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import argparse
+
 
 
 
@@ -213,10 +215,22 @@ def create_3d_plot(difference_matrix, view_angle, output_filename, dpi):
 
 
 
+
+# Set up and parse command-line arguments
+parser = argparse.ArgumentParser(description='Select which slices you want to visualise. Write --first 0 --last 0 --step 1 if you do not want to visualise any slice')
+parser.add_argument('--first', type=int, required=True, help='Enter the start of the slice range (>=0)')
+parser.add_argument('--last', type=int, required=True, help='Enter the end of the slice range (<256)')
+parser.add_argument('--step', type=int, required=True, help='Enter the step for the slice range (>0, recommended >15 at least)')
+
+args = parser.parse_args()
+
+first = args.first
+last = args.last
+step = args.step
+
+
 #Define cases of comparison
 cases = [('FreeSurfer', 'FreeSurfer_auto'), ('FreeSurfer', 'FastSurfer'), ('FreeSurfer_auto', 'FastSurfer')]
-
-
 
 
 print("Loading the data from the files...")
@@ -248,7 +262,6 @@ create_bar_plot(data_sagittal, 'Sagittal')
 
 
 
-
 #Line plots
 print("\nComputing line plots...")
 
@@ -269,8 +282,6 @@ create_line_plot(data_sagittal, 'Sagittal')
 
 
 
-
-
 #Difference matrix 2D
 print("\nVisualising difference matrices...")
 
@@ -280,22 +291,6 @@ for case in cases:
     difference_matrix = np.load(f'Results/difference_matrix_{case[0]}_vs_{case[1]}.npy')
     difference_matrices.append(difference_matrix)
 
-
-#Ask the user which slices to visualise
-while True:
-    try:
-        print("\nSelect which slices you want to visualise. \nWrite e.g. (0, 0, 1) if you don't want to visualise any slice")
-
-        first = int(input("Enter the start of the slice range (>=0): "))
-        last = int(input("Enter the end of the slice range (<256): "))
-        step = int(input("Enter the step for the slice range (>0, recommended >15 at least): "))
-
-        break
-
-    except ValueError:
-        print("Invalid input. Please enter an integer.")
-
-
 #set the slices to see
 slice_index = list(range(first, last, step))
 
@@ -304,7 +299,6 @@ slice_index = list(range(first, last, step))
 case_names = ['A', 'B', 'C']
 
 projection_names = ['Axial', 'Coronal', 'Sagittal']
-
 
 # For each case
 for i, diff_matrix in enumerate(difference_matrices):
@@ -343,7 +337,6 @@ for i, diff_matrix in enumerate(difference_matrices):
                 plt.savefig(save_path)
 
                 plt.show()
-
 
 
 
