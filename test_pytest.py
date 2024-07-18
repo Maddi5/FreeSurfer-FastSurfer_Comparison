@@ -252,31 +252,69 @@ def test_get_largest_CC_no_connected_components():
 
 #JACCARD_INDEX
 
-def test_jaccard_output():
+def test_jaccard_output_no_intersection():
 
     """
-    Test the jaccard_index function in three simple cases (no intersection, complete intersection, partial intersection)
+    Test the jaccard_index function when volumes don't intersect
 
-    GIVEN: Two binary volumes.
+    GIVEN: Two binary volumes without intersection
     WHEN: The jaccard_index function is called with these volumes.
-    THEN: The function returns the correct Jaccard Index for each case.
+    THEN: The function returns the correct Jaccard Index
 
     """
 
     seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
     seg2 = np.array([[[0, 0], [0, 1]], [[0, 0], [0, 1]]])
-    seg3 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
 
+    observed = jaccard_index(seg1, seg2)
+    expected = 0.0
 
-    assert jaccard_index(seg1, seg2) == 0.0, "Expected Jaccard Index to be 0 when segmentations don't intersect"
-
-    assert jaccard_index(seg1, seg1) == 1.0, "Expected Jaccard Index to be 1 when segmentations are identical"
-
-    assert jaccard_index(seg1, seg3) == (2/3), "Expected Jaccard Index to be 2/3"
+    assert observed == expected, "Expected Jaccard Index to be 0 when segmentations don't intersect"
 
 
 
-def test_jaccard_large_volumes():
+def test_jaccard_output_identical():
+
+    """
+    Test the jaccard_index function when volumes are identical
+
+    GIVEN: Two identical binary volumes
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index
+
+    """
+
+    seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+
+    observed = jaccard_index(seg1, seg1)
+    expected = 1.0
+
+    assert observed == expected, "Expected Jaccard Index to be 1 when segmentations are identical"
+
+
+
+def test_jaccard_output_partial_intersection():
+
+    """
+    Test the jaccard_index function when the volumes partially intersect
+
+    GIVEN: Two binary volumes
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index
+    """
+
+    seg1 = np.array([[[1, 0], [0, 0]], [[0, 0], [1, 0]]])
+    seg2 = np.array([[[1, 1], [0, 0]], [[0, 0], [1, 0]]])
+
+    observed = jaccard_index(seg1, seg2)
+    expected = 2/3
+
+    assert  observed == expected, "Expected Jaccard Index to be 2/3"
+
+
+
+
+def test_jaccard_large_volumes_identical():
 
     """
     Test the jaccard_index function with large volumes.
@@ -288,17 +326,36 @@ def test_jaccard_large_volumes():
     """
     #large volumes
     seg1 = np.ones((300, 300, 300))
+
+    expected = 1.0
+
+    assert jaccard_index(seg1, seg1) == expected, "Expected Jaccard Index to be 1 for identical segmentations"
+
+ 
+
+
+def test_jaccard_large_volumes_one_pixel():
+
+    """
+    Test the jaccard_index function with large volumes that differ for one pixel
+
+    GIVEN: Two large binary volumes with one different pixel for comparison.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function returns the correct Jaccard Index, even for large volumes.
+
+    """
+    #large volumes
+    seg1 = np.ones((300, 300, 300))
     seg2 = np.ones((300, 300, 300))
 
-    assert jaccard_index(seg1, seg2) == 1.0, "Expected Jaccard Index to be 1 for identical segmentations"
-
-    #large volumes with one pixel of difference
+    #one pixel of difference
     seg2[50, 50, 50] = 0
 
     observed = jaccard_index(seg1, seg2)
     expected = (seg1.size - 1) / seg1.size
     
     assert isclose(observed, expected, rel_tol=1e-6)
+
 
 
 
@@ -394,8 +451,6 @@ def test_jaccard_empty_volumes():
         jaccard_index(seg1, seg1)
     except ValueError as e:
         assert str(e) == "Both of the segmentations are empty. Jaccard Index cannot be computed", "Expected a ValueError when both of the segmentations are empty"
-
-
 
 
 
