@@ -13,7 +13,7 @@ Date: May 2024
 import numpy as np
 from math import isclose, pi
 
-from segmentations_comparison import load_volume, get_largest_CC
+from load_functions import load_volume, get_largest_CC
 from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 
 
