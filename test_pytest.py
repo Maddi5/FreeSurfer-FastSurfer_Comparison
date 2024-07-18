@@ -33,7 +33,9 @@ def test_load_volume_type_shape():
     """
     assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray), "Expected output type to be numpy.ndarray"
 
-    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == (256, 256, 256), "Expected loaded volume to have shape [256, 256, 256]"
+    expected_shape = (256, 256, 256)
+    
+    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == expected_shape, "Expected loaded volume to have shape [256, 256, 256]"
 
 
 
@@ -47,8 +49,12 @@ def test_load_volume_binary():
     THEN: The resulting volume is binary (containing only 0s and 1s).
 
     """
-
-    assert np.all((load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 0) | (load_volume('Simulated_Data/Simulated_FreeSurfer.mgz') == 1)), "Expected output volume to be binary"
+    volume = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
+    is_zero =  (volume == 0)
+    is_one = (volume == 1)
+    binary = np.all( is_zero | is_one)
+    
+    assert binary, "Expected output volume to be binary"
 
 
 
@@ -289,7 +295,10 @@ def test_jaccard_large_volumes():
     #large volumes with one pixel of difference
     seg2[50, 50, 50] = 0
 
-    assert isclose(jaccard_index(seg1, seg2), (seg1.size - 1) / seg1.size, rel_tol=1e-6)
+    observed = jaccard_index(seg1, seg2)
+    expected = (seg1.size - 1) / seg1.size
+    
+    assert isclose(observed, expected, rel_tol=1e-6)
 
 
 
@@ -322,10 +331,11 @@ def test_jaccard_complex_shapes():
     intersection_volume = np.sum(np.minimum(seg1, seg2))
     union_volume = np.sum(np.maximum(seg1, seg2))
     
+    observed_jaccard = jaccard_index(seg1, seg2)
     expected_jaccard = intersection_volume / union_volume
 
 
-    assert jaccard_index(seg1, seg2) == expected_jaccard
+    assert observed_jaccard == expected_jaccard
 
 
 
@@ -496,8 +506,11 @@ def test_volumetric_difference_complex_shapes():
     mask_2 = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
     seg2[mask_2] = 1
 
+    observed = volumetric_difference(seg1, seg2)
     #Volumetric difference should be the difference of the volumes of the two spheres
-    assert isclose(volumetric_difference(seg1, seg2), (4/3)*pi*(30**3 - 20**3), rel_tol=1e-2), "Failed to compute the volumetric difference between the spheres correctly"
+    expected = (4/3)*pi*(30**3 - 20**3)
+
+    assert isclose(observed, expected, rel_tol=1e-2), "Failed to compute the volumetric difference between the spheres correctly"
 
 
 
@@ -601,9 +614,11 @@ def test_Hausdorff_2D():
     seg1 = np.array([[1, 1], [0, 0]])
     seg2 = np.array([[1, 0], [0, 1]])
 
-    Hausdorff_dist = Hausdorff_distance(seg1, seg2)
+    Hausdorff_dist_obs = Hausdorff_distance(seg1, seg2)
 
-    assert Hausdorff_dist == 0.5, "Expected Hausdorff distance to be 0.5"
+    expected = 0.5
+
+    assert Hausdorff_dist_obs == expected, "Expected Hausdorff distance to be 0.5"
 
 
 def test_Hausdorff_3D_identical():
@@ -619,7 +634,10 @@ def test_Hausdorff_3D_identical():
     
     seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [1, 0]]])
 
-    assert Hausdorff_distance(seg1, seg1) == 0, "Expected Hausdorff distance to be 0 for identical segmentations"
+    observed = Hausdorff_distance(seg1, seg1)
+    expected = 0
+
+    assert observed == expected, "Expected Hausdorff distance to be 0 for identical segmentations"
 
 
 def test_Hausdorff_3D_single_point_segmentations():
@@ -638,7 +656,10 @@ def test_Hausdorff_3D_single_point_segmentations():
     seg1[0, 0, 0] = 1
     seg2[1, 1, 1] = 1
 
-    assert Hausdorff_distance(seg1, seg2) == np.sqrt(3), "Expected Hausdorff distance to be sqrt(3)"
+    observed = Hausdorff_distance(seg1, seg2)
+    expected =  np.sqrt(3)
+
+    assert observed == expected, "Expected Hausdorff distance to be sqrt(3)"
 
 
 
@@ -655,8 +676,10 @@ def test_Hausdorff_3D_large_volumes():
 
     seg1 = np.ones((300, 300, 300))
     seg2 = np.ones((300, 300, 300))
+
+    expected = 0.0
     
-    assert Hausdorff_distance(seg1, seg2) == 0.0, "Expected Hausdorff distance to be 0 for identical segmentations"
+    assert Hausdorff_distance(seg1, seg2) == expected, "Expected Hausdorff distance to be 0 for identical segmentations"
 
 
 
