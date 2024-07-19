@@ -388,12 +388,13 @@ def test_jaccard_large_volumes_one_pixel():
 
 
 
+
 def test_jaccard_complex_shapes():
 
     """
-    Test the jaccard_index function with complex shapes (spheres as approximations of brains)
+    Test the jaccard_index function with complex shapes (cubic shapes)
 
-    GIVEN: Two binary volumes with complex shapes (spheres).
+    GIVEN: Two binary volumes with complex shapes (cubic).
     WHEN: The jaccard_index function is called with these volumes.
     THEN: The function returns the correct Jaccard Index for these complex shapes.
 
@@ -402,26 +403,21 @@ def test_jaccard_complex_shapes():
     seg1 = np.zeros((100, 100, 100))
     seg2 = np.zeros((100, 100, 100))
 
-    y, x, z = np.ogrid[-50:50, -50:50, -50:50]
+    # Create a cube in the first volume
+    seg1[20:50, 20:50, 20:50] = 1
 
-    # Create a sphere in the first volume
-    mask_1 = x**2 + y**2 + z**2 <= 30**2
-    seg1[mask_1] = 1
-
-    # Create a sphere in the second volume
-    mask_2 = (x-5)**2 + (y-5)**2 + (z-5)**2 <= 20**2
-    seg2[mask_2] = 1
-
-
-    #Compute the jaccard index in an alternative way
-    intersection_volume = np.sum(np.minimum(seg1, seg2))
-    union_volume = np.sum(np.maximum(seg1, seg2))
+    # Create a cube in the second volume
+    seg2[30:60, 30:60, 30:60] = 1
     
     observed_jaccard = jaccard_index(seg1, seg2)
-    expected_jaccard = intersection_volume / union_volume
+
+    intersection_expected = 20*20*20
+    union_expected = (30*30*30*2) - intersection_expected
+    expected_jaccard = intersection_expected / union_expected
 
 
     assert observed_jaccard == expected_jaccard
+
 
 
 
