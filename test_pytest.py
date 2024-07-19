@@ -21,22 +21,35 @@ from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
 
 #LOAD_VOLUME
 
-def test_load_volume_type_shape():
+def test_load_volume_type():
 
     """
-    Test that load_volume() returns the correct type and shape.
+    Test that load_volume() returns the correct type
+
+    GIVEN: A valid .mgz file path.
+    WHEN: The load_volume function is called on the file in this path.
+    THEN: The function returns a numpy.ndarray
+
+    """
+    volume = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
+
+    assert isinstance(volume, np.ndarray), "Expected output type to be numpy.ndarray"
+
+
+def test_load_volume_shape():
+
+    """
+    Test that load_volume() returns the correct shape.
 
     GIVEN: A valid .mgz file path.
     WHEN: The load_volume function is called on the file in this path.
     THEN: The function returns a numpy.ndarray with the shape (256, 256, 256).
 
     """
-    assert isinstance(load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'), np.ndarray), "Expected output type to be numpy.ndarray"
-
+    volume = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
     expected_shape = (256, 256, 256)
     
-    assert load_volume('Simulated_Data/Simulated_FreeSurfer.mgz').shape == expected_shape, "Expected loaded volume to have shape [256, 256, 256]"
-
+    assert volume.shape == expected_shape, "Expected loaded volume to have shape [256, 256, 256]"
 
 
 def test_load_volume_binary():
@@ -121,14 +134,14 @@ def test_load_volume_empty_image():
 
 #GET_LARGEST_CC
 
-def test_get_largest_CC_type_shape():
+def test_get_largest_CC_type():
 
     """
-    Test that get_largest_CC() returns the correct type and shape.
+    Test that get_largest_CC() returns the correct type
 
     GIVEN: A valid output volume from load_volume function.
     WHEN: The get_largest_CC function is called with this volume.
-    THEN: The function returns a numpy.ndarray with the same shape as the input.
+    THEN: The function returns a numpy.ndarray
 
     """
     input_image = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
@@ -136,6 +149,22 @@ def test_get_largest_CC_type_shape():
     output_image = get_largest_CC(input_image)
 
     assert isinstance(output_image, np.ndarray), "Expected output type to be numpy.ndarray"
+
+
+
+def test_get_largest_CC_shape():
+
+    """
+    Test that get_largest_CC() returns the correct shape.
+
+    GIVEN: A valid output volume from load_volume function.
+    WHEN: The get_largest_CC function is called with this volume.
+    THEN: The function returns a numpy.ndarray with the same shape as the input
+
+    """
+    input_image = load_volume('Simulated_Data/Simulated_FreeSurfer.mgz')
+    
+    output_image = get_largest_CC(input_image)
 
     assert output_image.shape == input_image.shape, "Expected output shape to be the same as input"
 
