@@ -491,37 +491,92 @@ def test_jaccard_not_binary():
 
 #VOLUMETRIC DIFFERENCE
 
-def test_volumetric_difference_output():
+def test_volumetric_difference_output_equal_volume():
 
     """
-    Test the volumetric_difference function with three simple cases (equal volumes, identical input, one pixel difference)
+    Test the volumetric_difference function with segmentations with same volumes
 
-    GIVEN: The binary volumes for comparison.
+    GIVEN: The binary segmentations with identical volumes for comparison.
     WHEN: The volumetric_difference function is called with these volumes.
-    THEN: The function returns the correct volumetric difference for each case.
+    THEN: The function returns the correct volumetric difference
 
     """
 
     seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[0, 0], [1, 0]], [[0, 0], [1, 0]]])
-    seg3 = np.array([[[1, 0], [0, 0]], [[1, 0], [0, 1]]])
 
+    observed = volumetric_difference(seg1, seg2)
+    expected = 0
 
-    assert volumetric_difference(seg1, seg2) == 0, "Expected volumetric difference to be 0 if the volumes are equal"
+    assert observed == expected, "Expected volumetric difference to be 0 if the volumes are equal"
 
-    assert volumetric_difference(seg2, seg2) == 0, "Expected Volumetric Difference to be 0 for identical segmentations"
-
-    assert volumetric_difference(seg1, seg3) == -1, "Expected Volumetric Difference to be -1"
-
-
-
-
-def test_volumetric_difference_large_volumes():
+def test_volumetric_difference_output_identical():
 
     """
-    Test the volumetric_difference function with large volumes.
+    Test the volumetric_difference function with identical input
 
-    GIVEN: Two large binary volumes for comparison.
+    GIVEN: Two identical binary volumes for comparison.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference
+
+    """
+
+    seg1 = np.array([[[0, 0], [1, 0]], [[0, 0], [1, 0]]])
+
+    observed = volumetric_difference(seg1, seg1)
+    expected = 0
+
+    assert observed == expected, "Expected Volumetric Difference to be 0 for identical segmentations"
+
+
+def test_volumetric_difference_output_one_pixel():
+
+    """
+    Test the volumetric_difference function with volumes with one pixel difference
+
+    GIVEN: The binary volumes for comparison with one different pixel
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference 
+
+    """
+
+    seg1 = np.array([[[1, 0], [0, 1]], [[0, 0], [0, 0]]])
+    seg2 = np.array([[[1, 0], [0, 0]], [[1, 0], [0, 1]]])
+
+
+    observed = volumetric_difference(seg1, seg2)
+    expected = -1
+
+    assert observed == expected, "Expected Volumetric Difference to be -1"
+
+
+
+
+def test_volumetric_difference_large_volumes_identical():
+
+    """
+    Test the volumetric_difference function with identical large volumes.
+
+    GIVEN: Two large identical binary volumes for comparison.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function returns the correct volumetric difference, even for large volumes
+    """
+
+    #large volumes
+    seg1 = np.ones((300, 300, 300))
+
+    observed = volumetric_difference(seg1, seg1)
+    expected = 0
+
+    assert observed == expected, "Expected Volumetric Difference to be 0 for identical volumes"
+
+
+def test_volumetric_difference_large_volumes_one_pixel():
+
+    """
+    Test the volumetric_difference function with large volumes that differ of one pixel only
+
+    GIVEN: Two large binary volumes with only one different pixel for comparison.
     WHEN: The volumetric_difference function is called with these volumes.
     THEN: The function returns the correct volumetric difference, even for large volumes.
     """
@@ -530,13 +585,13 @@ def test_volumetric_difference_large_volumes():
     seg1 = np.ones((300, 300, 300))
     seg2 = np.ones((300, 300, 300))
 
-    assert volumetric_difference(seg1, seg2) == 0, "Expected Volumetric Difference to be 0 for identical volumes"
-
-    #large volumes with one pixel of difference
+    #one pixel of difference
     seg2[50, 50, 50] = 0
 
-    assert volumetric_difference(seg1, seg2) == 1, "Expected volumetric difference to be 1 if volumes differ of one pixel only"
+    observed = volumetric_difference(seg1, seg2)
+    expected = 1
 
+    assert observed == expected, "Expected volumetric difference to be 1 if volumes differ of one pixel only"
 
 
 
