@@ -9,7 +9,7 @@ Date: May 2024
 
 """
 
-
+import pytest
 import numpy as np
 from math import isclose, pi
 
@@ -102,11 +102,9 @@ def test_load_volume_not_existent():
     THEN: A FileNotFoundError is raised with the appropriate message.
 
     """
-    try:
-        load_volume('non_existent_file.mgz')
-    except FileNotFoundError as e:
-        assert str(e) == "File non_existent_file.mgz not found", "Expected a FileNotFoundError when input image doesn't exist"
 
+    with pytest.raises(FileNotFoundError, match="File non_existent_file.mgz not found"):
+        load_volume('non_existent_file.mgz')
 
 
 def test_load_volume_empty_image():
@@ -116,19 +114,12 @@ def test_load_volume_empty_image():
 
     GIVEN: A .mgz file path of an empty volume.
     WHEN: The load_volume function is called with this path.
-    THEN: A ValueError is raised
+    THEN: A ValueError is raised with the appropriate message.
 
     """
- 
-    try:
+
+    with pytest.raises(ValueError, match = "The input image contains only null values"):
         load_volume('Test_volumes/empty_volume.mgz')
-    except ValueError:
-        assert True
-    else:
-        assert False, "Expected ValueError when the image contains only null values"
-
-
-
 
 
 
