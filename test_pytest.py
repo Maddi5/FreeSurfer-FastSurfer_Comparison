@@ -235,10 +235,8 @@ def test_get_largest_CC_not_binary():
 
     not_binary_image = np.array([[[1, 3], [2, 0], [3, 1]], [[2, 2], [1, 1], [2, 3]], [[0, 1], [2, 2], [1, 1]]])
 
-    try:
+    with pytest.raises(ValueError, match = "Input image is not binary"):
         get_largest_CC(not_binary_image)
-    except ValueError as e:
-        assert str(e) == "Input image is not binary", "Expected ValueError when input image is not binary"
 
 
 def test_get_largest_CC_no_connected_components():
@@ -252,16 +250,9 @@ def test_get_largest_CC_no_connected_components():
     """
 
     input_image = np.zeros((8, 8, 8))
-    input_image[1, 1, 1] = 1
-    input_image[5, 5, 5] = 1
-    input_image[7, 7, 7] = 1
 
-    try:
+    with pytest.raises(ValueError, match = "No connected components found in the input image"):
         get_largest_CC(input_image)
-    except ValueError as e:
-        assert str(e) == "No connected components found in the input image", "Expected ValueError when the image has no connected components"
-
-
 
 
 
