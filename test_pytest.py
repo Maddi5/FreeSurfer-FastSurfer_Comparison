@@ -419,47 +419,45 @@ def test_jaccard_different_shapes():
     seg1 = np.zeros((5, 5, 5))
     seg2 = np.zeros((6, 6, 6))
 
-    try:
+    with pytest.raises(ValueError, match = "Input volumes are of different shape"):
         jaccard_index(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "Input volumes are of different shape", "Expected a ValueError when the input volumes are of different shape"
 
 
-
-
-
-def test_jaccard_empty_volumes():
+def test_jaccard_one_empty_volume():
 
     """
-    Test that the Jaccard Index function raises a ValueError for one or two empty volumes.
+    Test that the Jaccard Index function raises a ValueError for one empty volume.
 
-    GIVEN: Binary volumes with one or both being empty.
+    GIVEN: Binary volumes with one being empty.
     WHEN: The jaccard_index function is called with these volumes.
-    THEN: The function raises a ValueError indicating that the segmentation(s) is/are empty.
+    THEN: The function raises a ValueError indicating that one segmentation is empty.
 
     """
    
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[1, 1], [1, 0]], [[1, 0], [1, 1]]])
 
-    #one void segmentation
-    try:
+    with pytest.raises(ValueError, match = "One of the segmentations is empty. Jaccard Index cannot be computed"):
         jaccard_index(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "One of the segmentations is empty. Jaccard Index cannot be computed", "Expected a ValueError when one of the segmentations is empty"
 
-    try:
-        jaccard_index(seg2, seg1)
-    except ValueError as e:
-        assert str(e) == "One of the segmentations is empty. Jaccard Index cannot be computed", "Expected a ValueError when one of the segmentations is empty"
 
-    #both void segmentations
-    try:
+  
+
+def test_jaccard_empty_volumes():
+
+    """
+    Test that the Jaccard Index function raises a ValueError for two empty volumes.
+
+    GIVEN: Binary volumes with both being empty.
+    WHEN: The jaccard_index function is called with these volumes.
+    THEN: The function raises a ValueError indicating that the segmentations are empty.
+
+    """
+   
+    seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
+
+    with pytest.raises(ValueError, match = "Both of the segmentations are empty. Jaccard Index cannot be computed"):
         jaccard_index(seg1, seg1)
-    except ValueError as e:
-        assert str(e) == "Both of the segmentations are empty. Jaccard Index cannot be computed", "Expected a ValueError when both of the segmentations are empty"
-
-
 
 
 
@@ -478,18 +476,11 @@ def test_jaccard_not_binary():
     seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
     seg3 = np.array([[[1, 0], [-1, 0]], [[1, 0], [1, 0]]])
 
-    try:
+    with pytest.raises(ValueError, match = "Input volumes contain values other than 0 and 1"):
         jaccard_index(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are different than 0 or 1"
 
-
-    try:
+    with pytest.raises(ValueError, match = "Input volumes contain values other than 0 and 1"):
         jaccard_index(seg1, seg3)
-    except ValueError as e:
-        assert str(e) == "Input volumes contain values other than 0 and 1", "Expected a ValueError when values in input volumes are negative"
-
-
 
 
 
