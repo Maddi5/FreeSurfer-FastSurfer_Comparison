@@ -403,8 +403,6 @@ def test_jaccard_complex_shapes():
 
 
 
-
-
 def test_jaccard_different_shapes():
 
     """
@@ -622,38 +620,37 @@ def test_volumetric_difference_complex_shapes():
 
 
 
-def test_volumetric_difference_empty_volumes():
+def test_volumetric_difference_one_empty_volume():
 
     """
-    Test that the volumetric_difference function raises a ValueError for empty input volumes.
+    Test that the volumetric_difference function raises a ValueError for one empty input volume.
 
-    GIVEN: Binary volumes with one or both being empty.
+    GIVEN: Binary volumes with one being empty.
     WHEN: The volumetric_difference function is called with these volumes.
-    THEN: The function raises a ValueError indicating the volume(s) is/are empty.
+    THEN: The function raises a ValueError indicating the volume is empty.
     """
 
     seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
     seg2 = np.array([[[1, 0], [0, 1]], [[1, 0], [1, 1]]])
 
-    #one empty segmentation
-    try:
+    with pytest.raises(ValueError, match = "One of the segmented volumes is empty. Check input data"):
         volumetric_difference(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "One of the segmented volumes is empty. Check input data", "Expected a ValueError when one of the segmentations is empty"
-
-    try:
-        volumetric_difference(seg2, seg1)
-    except ValueError as e:
-        assert str(e) == "One of the segmented volumes is empty. Check input data", "Expected a ValueError when one of the segmentations is empty"
 
 
-    #both empty segmentations
-    try:
+def test_volumetric_difference_empty_volumes():
+
+    """
+    Test that the volumetric_difference function raises a ValueError for empty input volumes.
+
+    GIVEN: Binary volumes with both being empty.
+    WHEN: The volumetric_difference function is called with these volumes.
+    THEN: The function raises a ValueError indicating the volumes are empty.
+    """
+
+    seg1 = np.array([[[0, 0], [0, 0]], [[0, 0], [0, 0]]])
+
+    with pytest.raises(ValueError, match = "Both of the segmented volumes are empty. Check input data"):
         volumetric_difference(seg1, seg1)
-    except ValueError as e:
-        assert str(e) == "Both of the segmented volumes are empty. Check input data", "Expected a ValueError when both of the segmentations are empty"
-
-
 
 
 def test_volumetric_difference_different_shapes():
@@ -670,11 +667,8 @@ def test_volumetric_difference_different_shapes():
     seg1 = np.zeros((5, 5, 5))
     seg2 = np.zeros((6, 6, 6))
 
-    try:
-        volumetric_difference(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "Input volumes are of different shape", "Expected a ValueError when the input volumes are of different shape"
-
+    with pytest.raises(ValueError, match = "Input volumes are of different shape"):
+        volumetric_difference(seg1,seg2)
 
 
 def test_volumetric_difference_not_binary():
@@ -692,17 +686,11 @@ def test_volumetric_difference_not_binary():
     seg2 = np.array([[[1, 3], [0, 2]], [[1, 0], [0, 0]]])
     seg3 = np.array([[[1, 0], [-1, 0]], [[1, 0], [1, 0]]])
 
-    try:
+    with pytest.raises(ValueError, match = "Input volumes contain values other than 0 and 1. Check input data"):
         volumetric_difference(seg1, seg2)
-    except ValueError as e:
-        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are not binary"
 
-    try:
-        volumetric_difference(seg1, seg3)
-    except ValueError as e:
-        assert str(e) == "Input volumes contain values other than 0 and 1. Check input data", "Expected a ValueError when values in the volumes are negative"
-
-
+    with pytest.raises(ValueError, match = "Input volumes contain values other than 0 and 1. Check input data"):
+        volumetric_difference(seg1, seg3)     
 
 
 
