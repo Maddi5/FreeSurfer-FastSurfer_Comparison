@@ -5,7 +5,7 @@
 Script to load MRI images from .mgz files, compute the metrics for the comparison and analyze the difference matrix.
 
 Author: Maddalena Cavallo
-Date: May 2024
+Date: July 2024
 
 """
 
@@ -16,6 +16,7 @@ from medpy.metric.binary import dc
 
 from load_functions import load_volume, get_largest_CC
 from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
+from processing_functions import slice_selection, slice_process
 
 
 
@@ -104,31 +105,13 @@ for case in cases:
 
         differences = []
 
-
         #Iterate over the slices
         for i in range(difference_matrix.shape[axis]):
 
-            #select in which direction to move to "cut" the brain
-            if axis == 0:
-                slice = difference_matrix[i, :, :]
-            elif axis == 1:
-                slice = difference_matrix[:, i, :]
-            elif axis == 2:
-                slice = difference_matrix[:, :, i]
+            slice = slice_selection(difference_matrix, plane, i)
 
-
-            # Sum of the difference matrix in that slice
-            slice_sum = np.sum(slice)
-
-            #Apply the absolute value to compute the total number of different pixels in that slice
-            slice_num_diff = np.sum(np.abs(slice))
-
-            slice_total_pixels = slice.shape[0]*slice.shape[1] # take always the same axis because it's symmetric in 3D
-
-            # Compute the percentage of different pixels in that slice
-            perc_diff = (slice_num_diff / slice_total_pixels) * 100
-
-
+            slice_num_diff, perc_diff, slice_sum = slice_process(slice)
+   
             #Add all the results to the list for that slice
             differences.append([i, slice_num_diff, perc_diff, slice_sum])
 
