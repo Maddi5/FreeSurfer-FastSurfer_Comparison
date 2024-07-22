@@ -15,6 +15,7 @@ from math import isclose, pi
 
 from load_functions import load_volume, get_largest_CC
 from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
+from processing_functions import slice_selection
 
 
 
@@ -851,3 +852,71 @@ def test_Hausdorff_not_binary():
 
     with pytest.raises(ValueError, match = "Input volumes contain values other than 0 and 1. Check input data"):
         Hausdorff_distance(seg1, seg3)
+
+
+
+
+#SLICE_SELECTION
+
+def test_slice_selection_axial():
+
+    """
+    Test that the slice_selection function selects the correct slice from a 3D array in the axial projection.
+
+    GIVEN: A 3D difference matrix
+    WHEN: The slice_selection function is called on this matrix, specifying the 'Axial' view
+    THEN: The function returns the correct 2D slice
+
+    """
+
+    difference_matrix = np.array([[[0, 1, 2], [3, 4, 5], [6, 7, 8]], 
+                                  [[9, 10, 11], [12, 13, 14], [15, 16, 17]],
+                                  [[18, 19, 20], [21, 22, 23], [24, 25, 26]]])
+
+    observed_axial_slice = slice_selection(difference_matrix, 'Axial', 1)
+    expected_axial_slice = np.array([[9, 10, 11], [12, 13, 14], [15, 16, 17]])
+    
+    assert np.array_equal(observed_axial_slice, expected_axial_slice)
+        
+
+def test_slice_selection_coronal():
+    
+    """
+    Test that the slice_selection function selects the correct slice from a 3D array in the coronal projection.
+
+    GIVEN: A 3D difference matrix
+    WHEN: The slice_selection function is called on this matrix, specifying the 'Coronal' view
+    THEN: The function returns the correct 2D slice
+
+    """
+
+    difference_matrix = np.array([[[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+                                  [[9, 10, 11], [12, 13, 14], [15, 16, 17]],
+                                  [[18, 19, 20], [21, 22, 23], [24, 25, 26]]])
+
+    observed_coronal_slice = slice_selection(difference_matrix, 'Coronal', 1)
+    expected_coronal_slice = np.array([[3, 4, 5], [12, 13, 14], [21, 22, 23]])
+
+    assert np.array_equal(observed_coronal_slice, expected_coronal_slice)
+
+
+def test_slice_selection_sagittal():
+    
+    """
+    Test that the slice_selection function selects the correct slice from a 3D array in the sagittal projection.
+
+    GIVEN: A 3D difference matrix
+    WHEN: The slice_selection function is called on this matrix, specifying the 'Sagittal' view
+    THEN: The function returns the correct 2D slice
+
+    """
+
+    difference_matrix = np.array([[[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+                                  [[9, 10, 11], [12, 13, 14], [15, 16, 17]],
+                                  [[18, 19, 20], [21, 22, 23], [24, 25, 26]]])
+
+    observed_sagittal_slice = slice_selection(difference_matrix, 'Sagittal', 1)
+    expected_sagittal_slice = np.array([[1, 4, 7], [10, 13, 16], [19, 22, 25]])
+    
+    assert np.array_equal(observed_sagittal_slice, expected_sagittal_slice)
+        

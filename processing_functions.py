@@ -11,6 +11,24 @@ import numpy as np
 
 
 def slice_selection(difference_matrix, plane, i):
+     
+    """
+    This function selects a 2D slice from the 3D difference matrix based on the specified plane and index.
+
+    Parameters
+    ----------
+    difference_matrix : numpy.ndarray
+        A 3D numpy array representing the difference matrix between two segmentations
+    plane : str
+        The plane along which to move to "cut" the brain and extract the slice. Should be one of 'Axial', 'Coronal', or 'Sagittal'
+    i : int
+        The index of the slice along the specified plane.
+
+    Returns
+    -------
+    slice : numpy.ndarray
+        A 2D numpy array representing the selected slice from the difference matrix provided as input
+    """
 	
     #select in which direction to move to "cut" the brain
     if plane == 'Axial':
