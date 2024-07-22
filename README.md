@@ -60,6 +60,7 @@ The main directory includes:
 - `segmentations_comparison.py`: Script to load segmentation volumes, extract the largest connected component, compute comparison metrics and difference matrix.
 - `load_functions.py` : Script containing functions to load the volumes and to extract the largest connected component.
 - `metrics.py`: Script containing functions to compute various metrics between two binary volumes.
+- `processing_functions.py`: Script containing functions to select the slices for one specific view and to process them.
 - `plot_differences.py`: Script to generate visualizations (bar plots, line plots, 2D plots, 3D plots) of the differences between segmentation volumes.
 - `test_pytest.py`: script containing all test functions
 
@@ -93,6 +94,10 @@ This script contains functions to compute the following metrics between two bina
 - **Volumetric Difference**: Measures the difference in volume between two sets.
 - **Hausdorff Distance**: Measures the distance between points in two sets.
 
+  
+### processing_functions.py
+
+This script contains the functions to select the slices for one specific view (Axial, Coronal, Sagittal) and to process them, computing the total number of different pixels, the corresponding percentage and the total sum of the difference matrix in that slice.
 
 ### segmentations_comparison.py
 
