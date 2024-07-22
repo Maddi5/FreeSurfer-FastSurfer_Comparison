@@ -12,6 +12,7 @@ Date: July 2024
 
 import numpy as np
 import pandas as pd
+import configparser 
 from medpy.metric.binary import dc
 
 from load_functions import load_volume, get_largest_CC
@@ -20,13 +21,19 @@ from processing_functions import slice_selection, slice_process
 
 
 
-# Load volumes
+# Load volumes from the configuration file
+print("\nReading configuration file...\n")
+
+# Parse the configuration file
+config = configparser.ConfigParser()
+config.read('config_file.ini')
+
 print("\nLoading volumes...\n")
 
-input_volumes= {
-    'FreeSurfer': load_volume('Simulated_Data/Simulated_FreeSurfer.mgz'),
-    'FreeSurfer_auto': load_volume('Simulated_Data/Simulated_FreeSurfer_auto.mgz'),
-    'FastSurfer': load_volume('Simulated_Data/Simulated_FastSurfer.mgz')
+input_volumes = {
+    'FreeSurfer': load_volume(config['Volumes']['FreeSurfer']),
+    'FreeSurfer_auto': load_volume(config['Volumes']['FreeSurfer_auto']),
+    'FastSurfer': load_volume(config['Volumes']['FastSurfer'])
 }
 
 # Convert to int type to be able perform the subtraction for the difference matrix
