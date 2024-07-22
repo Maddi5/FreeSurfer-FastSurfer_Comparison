@@ -13,7 +13,7 @@ import seaborn as sns
 import pandas as pd
 import argparse
 
-
+from processing_functions import slice_selection
 
 
 
@@ -316,13 +316,7 @@ for i, diff_matrix in enumerate(difference_matrices):
             print(f"Slice {j}")
 
             #Select the correct projection
-            if projection == 'Axial':
-                slice_data = diff_matrix[j, :, :]
-            elif projection == 'Coronal':
-                slice_data = diff_matrix[:, j, :]
-            elif projection == 'Sagittal':
-                slice_data = diff_matrix[:, :, j]
-
+            slice_data = slice_selection(diff_matrix, projection, j)
 
             if np.any(slice_data != 0):
 
