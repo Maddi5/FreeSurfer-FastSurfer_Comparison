@@ -29,15 +29,13 @@ The code was written and tested with these versions of the packages.
 
 
 ## Usage
-Place your .mgz files in the FreeSurfer-FastSurfer_Comparison directory. Then substitute 'FreeSurfer.mgz', 'FreeSurfer_auto.mgz' and 'FastSurfer.mgz' with the names of your files in the following part of `segmentations_comparison.py` script:
+Place your configuration file with the .mgz files path in the FreeSurfer-FastSurfer_Comparison directory. The config_file.ini should have the following structure:
 
 ```
-input_volumes= {
-    'FreeSurfer': load_volume('FreeSurfer.mgz'),
-    'FreeSurfer_auto': load_volume('FreeSurfer_auto.mgz'),
-    'FastSurfer': load_volume('FastSurfer.mgz')
-}
-
+[Volumes]
+FreeSurfer = path/to/FreeSurfer.mgz
+FreeSurfer_auto = path/to/FreeSurfer_auto.mgz
+FastSurfer = path/to/FastSurfer.mgz
 ```
 Then run `segmentations_comparison.py` to compute the metrics and save the results, and `plot_differences.py` to generate and save the visualizations. The results will be saved in the `Results` folder.
 
@@ -103,7 +101,7 @@ This script contains the functions to select the slices for one specific view (A
 
 This script performs the following steps:
 
-1. Load segmentation volumes from .mgz files
+1. Load segmentation volumes from .mgz files specified in the configuration file
 2. Extract the largest connected component.
 3. Compute metrics (Dice Similarity Coefficient, Jaccard Index, Volumetric Difference, Hausdorff Distance), using the functions defined in `metrics.py` script.
 4. Save the metrics into an Excel file.
@@ -113,7 +111,7 @@ Run the script:
 
 ```
 bash
-python segmentations_comparison.py
+python segmentations_comparison.py config_file.ini
 
 ```
 
