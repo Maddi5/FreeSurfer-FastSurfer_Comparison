@@ -15,7 +15,7 @@ from math import isclose, pi
 
 from load_functions import load_volume, get_largest_CC
 from metrics import jaccard_index, volumetric_difference, Hausdorff_distance
-from processing_functions import slice_selection
+from processing_functions import slice_selection, slice_process
 
 
 
@@ -920,3 +920,58 @@ def test_slice_selection_sagittal():
     
     assert np.array_equal(observed_sagittal_slice, expected_sagittal_slice)
         
+
+#SLICE_PROCESS
+
+def test_slice_process_num_diff():
+
+    """
+    Test that the slice_process function returns the correct number of different pixels in one slice
+
+    GIVEN: A 2D slice from a difference matrix
+    WHEN: The slice_process function is called on that slice
+    THEN: The function returns the correct number of different pixels in that slice
+    """
+
+    slice = np.array([[0, 1, 0], [-1, 0, 1], [-1, 0, 0]])
+
+    observed_num_diff, _, _ = slice_process(slice)
+    expected_num_diff = 4
+
+    assert observed_num_diff == expected_num_diff
+
+
+def test_slice_process_perc_diff():
+
+    """
+    Test that the slice_process function returns the correct percentage of different pixels in one slice
+
+    GIVEN: A 2D slice from a difference matrix
+    WHEN: The slice_process function is called on that slice
+    THEN: The function returns the correct percentage of different pixels in that slice
+    """
+
+    slice = np.array([[0, 1, 0], [-1, 0, 1], [-1, 0, 0]])
+
+    _, observed_perc_diff, _ = slice_process(slice)
+    expected_perc_diff = (4/9)*100
+
+    assert observed_perc_diff == expected_perc_diff
+
+
+def test_slice_process_sum():
+
+    """
+    Test that the slice_process function returns the correct sum of the difference matrix in that slice
+
+    GIVEN: A 2D slice from a difference matrix
+    WHEN: The slice_process function is called on that slice
+    THEN: The function returns the correct total sum of the difference matrix in that slice
+    """
+
+    slice = np.array([[0, 1, 0], [-1, 0, 1], [-1, 0, 0]])
+
+    _, _, observed_sum = slice_process(slice)
+    expected_sum = 0
+
+    assert observed_sum == expected_sum

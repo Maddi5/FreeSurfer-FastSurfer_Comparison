@@ -44,6 +44,24 @@ def slice_selection(difference_matrix, plane, i):
 
 def slice_process(slice):
 
+    """
+    This function processes a 2D slice from the 3D difference matrix, computing the total number of different pixels, the percentage and the total sum of the difference matrix in that slice
+
+    Parameters
+    ----------
+    slice : numpy.ndarray
+        A 2D numpy array representing a slice from the difference matrix.
+
+    Returns
+    -------
+    slice_num_diff : int
+        The total number of different pixels in the slice
+    perc_diff : float
+        The percentage of different pixels in the slice.
+    slice_sum : int
+        The total sum of the difference matrix values in the slice
+    """
+
     # Sum of the difference matrix in that slice
     slice_sum = np.sum(slice)
 
